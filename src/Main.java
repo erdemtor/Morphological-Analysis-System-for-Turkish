@@ -12,9 +12,15 @@ public class Main {
         Scanner s = new Scanner(System.in);
 
         HashMap<String,Integer> turkish = new HashMap<>();
+        ArrayList<HashMap<String, Integer>> turkissh = new ArrayList<>();
+        for (int i = 0; i < 40 ; i++) {
+            turkissh.add(new HashMap<>());
+        }
         while (scanner.hasNextLine()){
             String word = scanner.nextLine();
             String[] wordAndFreq = word.split(" ");
+            if(wordAndFreq[0].length()>2)
+            turkissh.get(wordAndFreq[0].length() - 2).put(wordAndFreq[0],Integer.parseInt(wordAndFreq[1]));
             turkish.put(wordAndFreq[0],Integer.parseInt(wordAndFreq[1]));
         }
 
@@ -27,27 +33,59 @@ public class Main {
             String[] words = WORD.split(" ");
             String  finalResult="";
             for (int i = 0; i <words.length ; i++) {
-                int min = Integer.MAX_VALUE;
-                for (String x: turkish.keySet()) {
+                //int min = Integer.MAX_VALUE;
+                boolean cont = true;
+                ArrayList<String> mins = new ArrayList<>();
+                for (String x: turkissh.get(words[i].length()-2).keySet()) {
                     int distance = minDistance(x,words[i].toLowerCase());
-                    if(distance<min){
-                        min = distance;
-                        result = x;
+                    if(distance== 1){
+                        mins.add(x);
+                    }
+                    else{
+                        if (distance == 0){
+                            cont=false;
+                            result = x;
+                            break;
+                        }
                     }
                 }
-                ArrayList<String> mins = new ArrayList<>();
-                for (String x: turkish.keySet()) {
-                    int distance = minDistance(x,words[i].toLowerCase());
-                    if(distance == min){
-                        mins.add(x);
+                if(cont){
+                    for (String x: turkissh.get(words[i].length()-1).keySet()) {
+                        int distance = minDistance(x,words[i].toLowerCase());
+                        if(distance== 1){
+                            mins.add(x);
+                        }
+                        else{
+                            if (distance == 0){
+                                cont=false;
+                                result = x;
+                                break;
+                            }
+                        }
+                    }
+                    if(words[i].length() > 2 && cont) {
+                        for (String x: turkissh.get(words[i].length()-3).keySet()) {
+                            int distance = minDistance(x,words[i].toLowerCase());
+                            if(distance== 1){
+                                mins.add(x);
+                            }
+                            else{
+                                if (distance == 0){
+                                    cont=false;
+                                    result = x;
+                                    break;
+                                }
+                            }
+                        }
                     }
 
                 }
+
                 int maxFreq = Integer.MIN_VALUE;
                 for (String w:mins) {
-                    if(turkish.get(w) > maxFreq){
+                    if(turkissh.get(w.length()-2).get(w) > maxFreq){
                         result = w;
-                        maxFreq=turkish.get(w);
+                        maxFreq=turkissh.get(w.length()-2).get(w);
                     }
 
                 }
