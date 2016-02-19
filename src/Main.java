@@ -2,6 +2,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Main {
@@ -10,11 +11,11 @@ public class Main {
         Scanner scanner = new Scanner(new File("turkish words database.txt"));
         Scanner s = new Scanner(System.in);
 
-        ArrayList<String> turkish = new ArrayList<>();
+        HashMap<String,Integer> turkish = new HashMap<>();
         while (scanner.hasNextLine()){
             String word = scanner.nextLine();
-            word = word.split(" ")[0];
-            turkish.add(word);
+            String[] wordAndFreq = word.split(" ");
+            turkish.put(wordAndFreq[0],Integer.parseInt(wordAndFreq[1]));
         }
 
         while (true){
@@ -27,7 +28,7 @@ public class Main {
             String  finalResult="";
             for (int i = 0; i <words.length ; i++) {
                 int min = Integer.MAX_VALUE;
-                for (String x: turkish) {
+                for (String x: turkish.keySet()) {
                     int distance = minDistance(x,words[i].toLowerCase());
                     if(distance<min){
                         min = distance;
@@ -35,32 +36,26 @@ public class Main {
                     }
                 }
                 ArrayList<String> mins = new ArrayList<>();
-                for (String x: turkish) {
+                for (String x: turkish.keySet()) {
                     int distance = minDistance(x,words[i].toLowerCase());
-                    if(distance == min && x.length()>words[i].length()){
+                    if(distance == min){
                         mins.add(x);
                     }
 
                 }
+                int maxFreq = Integer.MIN_VALUE;
                 for (String w:mins) {
-                    result = w;
+                    if(turkish.get(w) > maxFreq){
+                        result = w;
+                        maxFreq=turkish.get(w);
+                    }
+
                 }
 
                 finalResult+=result+" ";
-
             }
-
             System.out.println(finalResult);
-
-
-
-
         }
-
-
-
-
-
     }
 
 
