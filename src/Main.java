@@ -6,94 +6,12 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 public class Main {
-
+    static ArrayList<HashMap<String, Integer>> turkissh = new ArrayList<>();
+    static ArrayList<String> inputWords = new ArrayList<>();
     public static void main(String[] args) throws FileNotFoundException {
-        Scanner scanner = new Scanner(new File("turkish words database.txt"));
-        Scanner s = new Scanner(System.in);
-
-        HashMap<String,Integer> turkish = new HashMap<>();
-        ArrayList<HashMap<String, Integer>> turkissh = new ArrayList<>();
-        for (int i = 0; i < 40 ; i++) {
-            turkissh.add(new HashMap<>());
-        }
-        while (scanner.hasNextLine()){
-            String word = scanner.nextLine();
-            String[] wordAndFreq = word.split(" ");
-            if(wordAndFreq[0].length()>2)
-            turkissh.get(wordAndFreq[0].length() - 2).put(wordAndFreq[0],Integer.parseInt(wordAndFreq[1]));
-            turkish.put(wordAndFreq[0],Integer.parseInt(wordAndFreq[1]));
-        }
-
-        while (true){
-            String result ="";
-
-            System.out.println("Kelime Gir");
-            String WORD = s.nextLine();
-
-            String[] words = WORD.split(" ");
-            String  finalResult="";
-            for (int i = 0; i <words.length ; i++) {
-                //int min = Integer.MAX_VALUE;
-                boolean cont = true;
-                ArrayList<String> mins = new ArrayList<>();
-                for (String x: turkissh.get(words[i].length()-2).keySet()) {
-                    int distance = minDistance(x,words[i].toLowerCase());
-                    if(distance== 1){
-                        mins.add(x);
-                    }
-                    else{
-                        if (distance == 0){
-                            cont=false;
-                            result = x;
-                            break;
-                        }
-                    }
-                }
-                if(cont){
-                    for (String x: turkissh.get(words[i].length()-1).keySet()) {
-                        int distance = minDistance(x,words[i].toLowerCase());
-                        if(distance== 1){
-                            mins.add(x);
-                        }
-                        else{
-                            if (distance == 0){
-                                cont=false;
-                                result = x;
-                                break;
-                            }
-                        }
-                    }
-                    if(words[i].length() > 2 && cont) {
-                        for (String x: turkissh.get(words[i].length()-3).keySet()) {
-                            int distance = minDistance(x,words[i].toLowerCase());
-                            if(distance== 1){
-                                mins.add(x);
-                            }
-                            else{
-                                if (distance == 0){
-                                    cont=false;
-                                    result = x;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                }
-
-                int maxFreq = Integer.MIN_VALUE;
-                for (String w:mins) {
-                    if(turkissh.get(w.length()-2).get(w) > maxFreq){
-                        result = w;
-                        maxFreq=turkissh.get(w.length()-2).get(w);
-                    }
-
-                }
-
-                finalResult+=result+" ";
-            }
-            System.out.println(finalResult);
-        }
+        readFromFile();
+        readAndFillInput();
+        System.out.println(correctMisspelling());
     }
 
 
@@ -135,5 +53,98 @@ public class Main {
         }
 
         return dp[len1][len2];
+    }
+    public static void readFromFile() throws FileNotFoundException {
+        Scanner scanner = new Scanner(new File("turkish words database.txt"));
+        Scanner s = new Scanner(System.in);
+
+        for (int i = 0; i < 40 ; i++) {
+            turkissh.add(new HashMap<>());
+        }
+        while (scanner.hasNextLine()){
+            String word = scanner.nextLine();
+            String[] wordAndFreq = word.split(" ");
+            if(wordAndFreq[0].length()>2)
+                turkissh.get(wordAndFreq[0].length() - 2).put(wordAndFreq[0],Integer.parseInt(wordAndFreq[1]));
+        }
+    }
+    public static void readAndFillInput() throws FileNotFoundException {
+        Scanner s = new Scanner(new File("input.txt"));
+
+        while (s.hasNextLine()){
+            String WORD = s.nextLine();
+            String[] words = WORD.split(" ");
+            for (String word:words) {
+                inputWords.add(word);
+            }
+        }
+
+
+
+
+
+    }
+    public static String correctMisspelling(){
+        String result ="";
+        String  finalResult="";
+        for (int i = 0; i <inputWords.size() ; i++) {
+            //int min = Integer.MAX_VALUE;
+            boolean cont = true;
+            ArrayList<String> mins = new ArrayList<>();
+            for (String x: turkissh.get(inputWords.get(i).length()-2).keySet()) {
+                int distance = minDistance(x,inputWords.get(i).toLowerCase());
+                if(distance== 1){
+                    mins.add(x);
+                }
+                else{
+                    if (distance == 0){
+                        cont=false;
+                        result = x;
+                        break;
+                    }
+                }
+            }
+            if(cont){
+                for (String x: turkissh.get(inputWords.get(i).length()-1).keySet()) {
+                    int distance = minDistance(x,inputWords.get(i).toLowerCase());
+                    if(distance== 1){
+                        mins.add(x);
+                    }
+                    else{
+                        if (distance == 0){
+                            cont=false;
+                            result = x;
+                            break;
+                        }
+                    }
+                }
+                if(inputWords.get(i).length() > 2 && cont) {
+                    for (String x: turkissh.get(inputWords.get(i).length()-3).keySet()) {
+                        int distance = minDistance(x,inputWords.get(i).toLowerCase());
+                        if(distance== 1){
+                            mins.add(x);
+                        }
+                        else{
+                            if (distance == 0){
+                                cont=false;
+                                result = x;
+                                break;
+                            }
+                        }
+                    }
+                }
+                int maxFreq = Integer.MIN_VALUE;
+                result = inputWords.get(i);
+                for (String w:mins) {
+                    if(turkissh.get(w.length()-2).get(w) > maxFreq){
+                        result = w;
+                        maxFreq=turkissh.get(w.length()-2).get(w);
+                    }
+                }
+            }
+
+            finalResult+= result+" ";
+        }
+        return finalResult;
     }
 }
