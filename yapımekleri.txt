@@ -1,6 +1,9 @@
  -lık, -lik, -luk, -lük * isim sifat
-  -lık, -lik, -luk, -lük * isim isim
- -lı, -li, -lu, -lü, * isim
+ -lık, -lik, -luk, -lük * isim isim
+ -lı, -li, -lu, -lü, * isim isim
+  -lı, -li, -lu, -lü, * isim sifat
+  
+ 
  -sız -siz, -suz, -süz, * isim
  -cı, -ci, -cu, -cü, -çı, -çi, -çu, -çü, * isim
  -cık, -cik, -cuk, -cük, -çık, -çik, -çuk, -çük, * isim
