@@ -49,12 +49,47 @@
  
  ATA
  ====================================================
- -la-, -le-, -al-, -el-, -l-, -a-, -e-, -ar-, -er-, -da-, -de-, -k-, -kır-, -kir-, -kur-, -kür-, -msa-, -mse-, -r-, -sa-, -se-,
--l-, -ma-, -me-, -n-, -r-, -t-, -ş-, -dır-, -dir-, -dur-, -dür-, -tır-, -tir-, -tur-, -tür-, -a-, -e-, -ala-, -ele-, -ar-, -er-, -ı-, -ü-, -k-, -p-,
+ -la-, -le-,
+ -al-, -el-,
+ -l-, -a-, -e-,
+ -ar-, -er-,
+ -da-, -de-,
+ -k-,
+ -kır, -kir, -kur-, -kür-,
+ -msa, -mse-,
+ -r-, -sa-, -se-,
+-l-,
+ -ma-, -me-,
+ -n-,
+ -r-,
+ -t-,
+ -ş-,
+ -dır-, -dir-, -dur-, -dür-, -tır-, -tir-, -tur-, -tür-,
+ -a-, -e-,
+ -ala-, -ele-,
+ -ar-, -er-,
+ -ı-,
+ -ü-,
+ -k-,
+ -p-,
 -gan, -gen, -kan, -ken, -gı, -gi, -gu, -gü, -kı, -ki, -ku, -kü, -gın, -gin, -gun, -gün, -kın, -kin, -kun, -kün, -ı, -i, -u, -ü, -ıcı, -ici, -ucu, -ücü, -ış, -iş, -uş, -üş, -k, -m, -me, -ma, -mak, -mek, -tı, -ti, -tu, -tü, -a, -e, -ağan, -eğen, -ak, -ek, -alak, -elek, -amak, -emek, -anak, -enek, ca, -ce, -ç, -aç, -eç, -dı, -di, -du, -dü, -tı, -ti, -tu, -tü, -ga, -ge, -gaç, -geç, -kaç, -gıç, -giç, -guç, -maca, -mece, -maç, -meç, -man, -men, -mık, -mik, -muk, -n, -t, 
 
 
 
 // ERDEM
--acak, -ecek, -an, -en, -ar, -er, -ası, -esi, -dık, -dik, -duk, -dük, -tık, -tik, -tuk, -tük, -maz, -mez, -mış, -miş, -muş, -müş, -r,
--a, -e, -alı, -eli, -arak, -erek, -dıkça, -dikçe, -dukça, -dükçe, -tıkça, -tikçe, -tukça, -tükçe, -ı, -i, -u, -ü, -ınca, -ince, -unca, -ünce, -ıp, -ip, -up, -üp, -ken, -madan, -meden
+-acak, -ecek, * fiil sifat
+ -an, -en, * fiil sifat
+ -ar, -er, * fiil sifat
+ -ası, -esi, * fiil sifat
+ -dık, -dik, -duk, -dük, -tık, -tik, -tuk, -tük, * fiil sifat 
+ -maz, -mez, -mış, -miş, -muş, -müş, * fiil sifat
+ -r, * fiil sifat
+-a, -e, * fiil zarf
+-alı, -eli, * fiil zarf
+-arak, -erek, * fiil zarf
+-dıkça, -dikçe, -dukça, -dükçe, -tıkça, -tikçe, -tukça, -tükçe, * fiil zarf 
+-ı, -i, -u, -ü,  * fiil zarf
+-ınca, -ince, -unca, -ünce, * fiil zarf
+ -ıp, -ip, -up, -üp, * fiil zarf
+ -ken, * fiil zarf
+ -madan, -meden * fiil zarf
