@@ -1,95 +1,135 @@
- -lık, -lik, -luk, -lük * isim sifat
- -lık, -lik, -luk, -lük * isim isim
- -lı, -li, -lu, -lü, * isim isim
-  -lı, -li, -lu, -lü, * isim sifat
-  
- 
- -sız -siz, -suz, -süz, * isim
- -cı, -ci, -cu, -cü, -çı, -çi, -çu, -çü, * isim
- -cık, -cik, -cuk, -cük, -çık, -çik, -çuk, -çük, * isim
- -ca, -ce, -ça, -çe, * isim
- -daş, -deş, -taş, -teş, * isim
- -ncı, -nci, -ncu, -ncü, * isim
- -ar, -er, * isim
- -şar, -şer, * isim
- -sal, -sel, * isim
- -tı, -ti, -tu, -tü, * isim
- -aç, -eç, * isim
- -ak, -ek, * isim
- -an, -en, * isim
- -cıl, -cil, -cul,-cül, -çıl, -çil, -çul, * isim
- -cileyin, * isim
- -gil, -gül, -kıl, -kil, * isim
- -ge, -ka, * isim
- -kan, -ken, * isim
- -kek, * isim
- -man, -men, * isim
- -la, -lak, -lek, * isim
- -layın, -leyin, * isim
- -msı, -msi, -msu, * isim
- -mtırak, * isim
- -rak, -rek, -sak, -sek, * isim
- -sı, -si, -su, -sü, * isim
- -şın, -şin, * isim
- -t, * isim
- -z, * isim
-
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- ATA
- ====================================================
- -la-, -le-,
- -al-, -el-,
- -l-, -a-, -e-,
- -ar-, -er-,
- -da-, -de-,
- -k-,
- -kır, -kir, -kur-, -kür-,
- -msa, -mse-,
- -r-, -sa-, -se-,
--l-,
- -ma-, -me-,
- -n-,
- -r-,
- -t-,
- -ş-,
- -dır-, -dir-, -dur-, -dür-, -tır-, -tir-, -tur-, -tür-,
- -a-, -e-,
- -ala-, -ele-,
- -ar-, -er-,
- -ı-,
- -ü-,
- -k-,
- -p-,
--gan, -gen, -kan, -ken, -gı, -gi, -gu, -gü, -kı, -ki, -ku, -kü, -gın, -gin, -gun, -gün, -kın, -kin, -kun, -kün, -ı, -i, -u, -ü, -ıcı, -ici, -ucu, -ücü, -ış, -iş, -uş, -üş, -k, -m, -me, -ma, -mak, -mek, -tı, -ti, -tu, -tü, -a, -e, -ağan, -eğen, -ak, -ek, -alak, -elek, -amak, -emek, -anak, -enek, ca, -ce, -ç, -aç, -eç, -dı, -di, -du, -dü, -tı, -ti, -tu, -tü, -ga, -ge, -gaç, -geç, -kaç, -gıç, -giç, -guç, -maca, -mece, -maç, -meç, -man, -men, -mık, -mik, -muk, -n, -t, 
-
-
-
-// ERDEM
+-lık, -lik, -luk, -lük * isim sifat
+-lık, -lik, -luk, -lük * isim isim
+-lı, -li, -lu, -lü, * isim isim
+-lı, -li, -lu, -lü, * isim sifat
+-sız -siz, -suz, -süz, * isim zarf
+-sız -siz, -suz, -süz, * isim sıfat
+-sız -siz, -suz, -süz, * isim isim
+-cı, -ci, -cu, -cü, -çı, -çi, -çu, -çü, * isim isim
+-cık, -cik, -cuk, -cük, -çık, -çik, -çuk, -çük, * isim isim
+-ca, -ce, -ça, -çe, * isim isim
+-ca, -ce, -ça, -çe, * isim sıfat
+-daş, -deş, -taş, -teş, * isim isim
+-ncı, -nci, -ncu, -ncü, * isim isim
+-ncı, -nci, -ncu, -ncü, * isim sıfat
+-ar, -er, * isim isim
+-şar, -şer, * isim sıfat
+-şar, -şer, * isim isim
+-sal, -sel, * isim sıfat
+-tı, -ti, -tu, -tü, * isim isim
+-aç, -eç, * isim isim
+-aç, -eç, * isim sıfat
+-ak, -ek, * isim isim
+-ak, -ek, * isim sıfat
+-an, -en, * isim isim
+-cıl, -cil, -cul,-cül, -çıl, -çil, -çul, * isim isim
+-cıl, -cil, -cul,-cül, -çıl, -çil, -çul, * isim sıfat
+-cileyin, * isim isim
+-gil, -gül, -kıl, -kil, * isim isim
+-ge, -ka, * isim isim
+-ge, -ka, * isim sıfat
+-kan, -ken, * isim isim
+-kan, -ken, * isim sıfat
+-kek, * isim isim
+-man, -men, * isim isim
+-la, -lak, -lek, * isim isim
+-la, -lak, -lek, * isim sıfat
+-layın, -leyin, * isim isim
+-msı, -msi, -msu, * isim isim
+-msı, -msi, -msu, * isim sıfat
+-mtırak, * isim isim
+-mtırak, * isim sıfat
+-rak, -rek, -sak, -sek, * isim isim
+-sı, -si, -su, -sü, * isim isim
+-sı, -si, -su, -sü, * isim sıfat
+-şın, -şin, * isim sıfat
+-şın, -şin, * isim isim
+-t, * isim isim
+-t, * isim sıfat
+-z, * isim isim
+-z, * isim sıfat
+-la-, -le-, * isim fiil
+-al-, -el-, * isim fiil
+-l-, -a-, -e-, * isim fiil
+-ar-, -er-, * isim fiil
+-da-, -de-, * isim fiil
+-k-, * isim fiil
+-kır, -kir, -kur-, -kür-, * isim fiil
+-msa, -mse-, * isim fiil
+-r-,  * isim fiil
+-sa-, -se-, * isim fiil
+-l-, * fiil fiil
+-ma-, -me-, * fiil fiil
+-n-, * fiil fiil
+-r-, * fiil fiil
+-t-, * fiil fiil
+-ş-, * fiil fiil
+-dır-, -dir-, -dur-, -dür-, -tır-, -tir-, -tur-, -tür-, * fiil fiil
+-a-, -e-, * fiil fiil
+-ala-, -ele-, * fiil fiil
+-ar-, -er-, * fiil fiil
+-ı-, * fiil fiil
+-ü-, * fiil fiil
+-k-, * fiil fiil
+-p-, * fiil fiil
+-gan, -gen, -kan, -ken, * fiil isim
+-gan, -gen, -kan, -ken, * fiil sıfat
+-gı, -gi, -gu, -gü, -kı, -ki, -ku, -kü, * fiil isim
+-gın, -gin, -gun, -gün, -kın, -kin, -kun, -kün, * fiil isim
+-gın, -gin, -gun, -gün, -kın, -kin, -kun, -kün, * fiil sıfat
+-ı, -i, -u, -ü, * fiil isim
+-ı, -i, -u, -ü, * fiil sıfat
+-ıcı, -ici, -ucu, -ücü, * fiil isim
+-ıcı, -ici, -ucu, -ücü, * fiil sıfat
+-ış, -iş, -uş, -üş, * fiil isim
+-k, * fiil isim
+-k, * fiil sıfat
+-m, * fiil isim
+-me, -ma,  * fiil isim
+-me, -ma,  * fiil sıfat
+-mak, -mek, * fiil isim
+-tı, -ti, -tu, -tü, * fiil isim
+-a, -e, * fiil isim
+-ağan, -eğen, * fiil isim
+-ağan, -eğen, * fiil sıfat
+-ak, -ek, * fiil isim
+-ak, -ek, * fiil sıfat
+-alak, -elek, * fiil isim
+-alak, -elek, * fiil sıfat
+-amak, -emek, * fiil isim
+-amak, -emek, * fiil sıfat
+-anak, -enek, * fiil isim
+-ca, -ce, * fiil isim
+-ç, * fiil isim
+-ç, * fiil sıfat
+-aç, -eç,  * fiil isim
+-dı, -di, -du, -dü, -tı, -ti, -tu, -tü,  * fiil isim
+-ga, -ge, * fiil isim
+-ga, -ge, * fiil sıfat
+-gaç, -geç, -kaç,  * fiil isim
+-gaç, -geç, -kaç,  * fiil sıfat
+-gıç, -giç, -guç, * fiil isim
+-maca, -mece, * fiil isim
+-maç, -meç, * fiil isim
+-man, -men, * fiil isim
+-man, -men, * fiil sıfat
+-mık, -mik, -muk, * fiil isim
+-n, * fiil isim
+-n, * fiil sıfat
+-t, * fiil isim
 -acak, -ecek, * fiil sifat
- -an, -en, * fiil sifat
- -ar, -er, * fiil sifat
- -ası, -esi, * fiil sifat
- -dık, -dik, -duk, -dük, -tık, -tik, -tuk, -tük, * fiil sifat 
- -maz, -mez, -mış, -miş, -muş, -müş, * fiil sifat
- -r, * fiil sifat
+-an, -en, * fiil sifat
+-ar, -er, * fiil sifat
+-ası, -esi, * fiil sifat
+-dık, -dik, -duk, -dük, -tık, -tik, -tuk, -tük, * fiil sifat
+-maz, -mez, -mış, -miş, -muş, -müş, * fiil sifat
+-r, * fiil sifat
 -a, -e, * fiil zarf
 -alı, -eli, * fiil zarf
 -arak, -erek, * fiil zarf
 -dıkça, -dikçe, -dukça, -dükçe, -tıkça, -tikçe, -tukça, -tükçe, * fiil zarf 
 -ı, -i, -u, -ü,  * fiil zarf
 -ınca, -ince, -unca, -ünce, * fiil zarf
- -ıp, -ip, -up, -üp, * fiil zarf
- -ken, * fiil zarf
- -madan, -meden * fiil zarf
+-ıp, -ip, -up, -üp, * fiil zarf
+-ken, * fiil zarf
+-madan, -meden * fiil zarf
