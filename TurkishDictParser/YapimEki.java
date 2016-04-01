@@ -7,19 +7,16 @@ package TurkishDictParser; /**
  *
  *
  */
+
 public class YapimEki {
 
     String ek;
-    int action;
+    String from;
+    String to;
 
     public YapimEki() {
     }
 
-    public YapimEki(String ek, int action) {
-
-        this.ek = ek;
-        this.action = action;
-    }
 
     public String getEk() {
 
@@ -30,14 +27,40 @@ public class YapimEki {
         this.ek = ek;
     }
 
-    public int getAction() {
-        return action;
+    public YapimEki(String ek, String from, String to) {
+        this.ek = ek;
+        this.from = from;
+        this.to = to;
     }
 
-    public void setAction(int action) {
-        this.action = action;
+    public String getFrom() {
+
+        return from;
     }
 
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
+    public String getTo() {
+        return to;
+    }
+
+    public void setTo(String to) {
+        this.to = to;
+    }
+
+
+
+    @Override
+    public boolean equals(Object y) {
+        boolean sameSame = false;
+        if (y != null && y instanceof  YapimEki ) {
+            YapimEki yReal = (YapimEki) y;
+            sameSame = this.ek.equals(yReal.getEk());
+        }
+        return sameSame;
+    }
 
 
 }

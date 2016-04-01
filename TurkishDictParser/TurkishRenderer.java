@@ -5,18 +5,17 @@ import java.io.*;
 import java.util.*;
 
 public class TurkishRenderer {
-    public static HashSet<YapimEki> yapımEkleri;
+    public static ArrayList<YapimEki> yapımEkleri;
     public static ArrayList<Word> turkish;
     public static HashMap<Character, Character> fix;
     public static HashMap<Integer, String> alphabet;
-    public static ArrayList<String> renderedTurkish;
-
+    public static SortedSet<String> renderedTurkish;
+    public static ArrayList<FullWord> fullwords;
     public static void main(String[] args) throws IOException {
 
-
-
-        renderedTurkish = new ArrayList<String>();
-        yapımEkleri = new HashSet<YapimEki>();
+        fullwords = new ArrayList<>();
+        renderedTurkish = new TreeSet<>();
+        yapımEkleri = new ArrayList<>();
         turkish = new ArrayList<Word>();
         fix = new HashMap<Character, Character>();
         alphabet = new HashMap<Integer, String>();
@@ -25,27 +24,19 @@ public class TurkishRenderer {
         fix.put('ð', 'ğ');
         fix.put('ý', 'ı');
         readArticles("yapımekleri.txt", "C:\\Users\\Erdem\\Desktop\\NLP\\Sozluk");
-        System.out.println(yapımEkleri.size());
         renderTurkish();
 
-        System.out.println(yapımEkleri.size());
-        System.out.println(turkish.size());
-        System.out.println(renderedTurkish.size());
-        System.out.println(renderedTurkish.toString());
+        PrintWriter writer = new PrintWriter("TurkishRoots.txt", "UTF-8");
+        for (String root: renderedTurkish) {
 
-        PrintWriter writer = new PrintWriter("renderedTurkish.txt", "UTF-8");
-        for (String stem: renderedTurkish) {
-            writer.println(stem);
+            writer.println(root);
+
 
         }
-
-
         writer.close();
 
 
-
-
-
+        int x =0;
     }
 
     public static void createAlphabet() {
@@ -79,11 +70,7 @@ public class TurkishRenderer {
         alphabet.put(27, "z");
     }
 
-/*    public static void addTurkish(String word) {
-        if (Collections.binarySearch(turkish, word) < 0) {
-            turkish.add(word);
-        }
-    }*/
+
 
     public static void addRenderedTurkish(String word) {
         if (!renderedTurkish.contains(word)) {
@@ -91,34 +78,46 @@ public class TurkishRenderer {
         }
     }
 
-    public static void renderTurkish() {
-        for (int i = 0; i < turkish.size(); i++) { // her kelime ixin
+    public static void renderTurkish() throws FileNotFoundException, UnsupportedEncodingException {
+
+        boolean isFound;
+        for (int i = 0; i < turkish.size(); i++) { // her kelime icin
             Word word = turkish.get(i);
-            boolean isFound = false;
+            isFound = false;
             String currentWord = word.getContent();
             for (int j = 1; j < currentWord.length(); j++) { // her harf in th e word
-                if (turkish.contains(new Word(currentWord.substring(0, j),word.getType()))) { // we found the word
-                    if (isEklerProducable(currentWord.substring(j), turkish.get(turkish.indexOf(new Word(currentWord.substring(0, j),word.getType()))))) {
-                        /* bu kelime bir yapım eki serisi ile oluşmuş, kök değil, kök versiyonunu eklemeye çalışıyoruz*/
-                        addRenderedTurkish(currentWord.substring(0, j));
-                        isFound = true;
+                if (turkish.contains(new Word(currentWord.substring(0, j), word.getType()))) { // we found the word
+                   FullWord suspected = isEklerProducable(currentWord.substring(j), new Word(currentWord.substring(0, j), word.getType()));
+                    if ( suspected != null && PostFiltering.isFitsTurkish(suspected)) {
+                        renderedTurkish.add(suspected.getRoot());
+                        isFound= true;
                         break;
                     }
                 }
             }
-            if(!isFound) addRenderedTurkish(currentWord);
+            if(!isFound)
+            renderedTurkish.add(currentWord);
         }
     }
 
-    public static boolean isEklerProducable(String ekler , Word w) {
-        if(yapımEkleri.contains(ekler)) return true;
-        for (int i = 0; i < ekler.length(); i++) {
-            //if(isEklerProducable(ekler.substring(0, i)) && isEklerProducable(ekler.substring(i))) {
-                //    if(!yapımEkleri.contains(ekler)) yapımEkleri.add(ekler);// // TODO: 3/11/2016 BURADA TYPE ILE ILGILI BIR DURUM VAR, KELIME CLASSI YARAT, xml to json to object,
-                return true;
-        //    }
+    public static FullWord isEklerProducable(String ekler, Word w) {
+        if (yapımEkleri.contains(new YapimEki(ekler, "", ""))) {
+            ArrayList<String> eklerForWord = new ArrayList<>();
+            eklerForWord.add(ekler);
+            return new FullWord(w.getContent(), eklerForWord);
         }
-        return false;
+        for (int i = 1; i < ekler.length(); i++) {
+           FullWord w1 =isEklerProducable(ekler.substring(0, i), w);
+           FullWord w2 =isEklerProducable(ekler.substring(i), w);
+            if (w1!= null && w2 != null) {
+                ArrayList<String> eks = new ArrayList<>();
+                eks.addAll(w1.getEkler());
+                eks.addAll(w2.getEkler());
+                FullWord wResult = new FullWord(w.getContent(), eks);
+                return wResult;
+            }
+        }
+        return null;
     }
 
 
@@ -128,18 +127,21 @@ public class TurkishRenderer {
         int count = 0;
         int type = 0;
         while ((str = read.readLine()) != null) {
-            String temp = tokenize(str.trim());
-            String[] temp2 = temp.split(" ");
-            for (int i = 0; i < temp2.length; i++) {
+            //  String temp = tokenize(str.trim());
+            String[] temp2 = str.split(" \\* ");
+            String[] ekler = temp2[0].trim().split(", ");
+            String[] actions = temp2[1].trim().split(" ");
+            for (int i = 0; i < ekler.length; i++) {
                 YapimEki ek = new YapimEki();
-                ek.setAction(type);
-                ek.setEk(temp2[i]);
+                ek.setFrom(actions[0]);
+                ek.setTo(actions[1]);
+                ek.setEk(ekler[i]);
                 yapımEkleri.add(ek);
             }
             type++;
         }
         read.close();
-        for (int i = 0; i < 1; i++) { //for each of the files
+        for (int i = 0; i < 28; i++) { //for each of the files
             String currentFileName = filepath2 + "\\" + alphabet.get(i) + "\\";
             str = "";
             if (i < 15) {
@@ -152,32 +154,28 @@ public class TurkishRenderer {
             read = new BufferedReader(chars);
             while ((str = read.readLine()) != null) {
 
-                if (str.contains("<name>")){
-                    String afterNameTag = str.substring(str.indexOf("<name>")+7, str.indexOf("</name>")).trim();
-                    if(!afterNameTag.contains(" ")){
-                        System.out.print("."+afterNameTag+" ");
+                if (str.contains("<name>")) {
+                    String afterNameTag = str.substring(str.indexOf("<name>") + 7, str.indexOf("</name>")).trim();
+                    if (!afterNameTag.contains(" ")) {
                         while ((str = read.readLine()) != null && !str.contains("<lex_class>")) {
 
                         }
-                        if(str == null){
+                        if (str == null) {
                             str = "";
                         }
-                        String lexClass = str.substring(str.indexOf("<lex_class>")+11, str.indexOf("</lex_class>")).trim();
-                        int wordType = 0;
-                        if (lexClass.contains("isim")){
-                            wordType = 0;
-                        }
-                        else if (lexClass.contains("fiil")){
-                            wordType=1;
-                        }
-                        else if (lexClass.contains("sıfat")){
-                            wordType=2;
-                        }
-                        else if (lexClass.contains("zarf")){
-                            wordType=3;
+                        String lexClass = str.substring(str.indexOf("<lex_class>") + 11, str.indexOf("</lex_class>")).trim();
+                        String wordType = "";
+                        if (lexClass.contains("isim")) {
+                            wordType = "isim";
+                        } else if (lexClass.contains("fiil")) {
+                            wordType = "fiil";
+                        } else if (lexClass.contains("sıfat")) {
+                            wordType = "sıfat";
+                        } else if (lexClass.contains("zarf")) {
+                            wordType = "zarf";
                         }
 
-                        Word word = new Word(afterNameTag,wordType);
+                        Word word = new Word(afterNameTag.toLowerCase(), wordType);
                         turkish.add(word);
 
                     }
@@ -203,7 +201,6 @@ public class TurkishRenderer {
             }
             read.close();
         }
-        System.out.println(count);
     }
 
     public static String tokenize(String line) {

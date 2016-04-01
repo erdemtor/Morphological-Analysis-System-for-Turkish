@@ -6,9 +6,9 @@ package TurkishDictParser; /**
  */
 public class Word   {
     String content;
-    int type;
+    String type;
 
-    public Word(String content, int type) {
+    public Word(String content, String type) {
         this.content = content;
         this.type = type;
     }
@@ -25,17 +25,16 @@ public class Word   {
         this.content = content;
     }
 
-    public int getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(String type) {
         this.type = type;
     }
 
     @Override
-    public boolean equals(Object w)
-    {
+    public boolean equals(Object w) {
         boolean sameSame = false;
 
         if (w != null && w instanceof  Word )
