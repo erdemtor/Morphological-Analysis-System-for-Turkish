@@ -57,7 +57,7 @@ public class YapimEki {
         boolean sameSame = false;
         if (y != null && y instanceof  YapimEki ) {
             YapimEki yReal = (YapimEki) y;
-            sameSame = this.ek.equals(yReal.getEk());
+            sameSame = this.getEk().equals(yReal.getEk());
         }
         return sameSame;
     }

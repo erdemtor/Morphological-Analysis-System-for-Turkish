@@ -2,9 +2,9 @@ lık, lik, luk, lük * isim sifat
 lık, lik, luk, lük * isim isim
 lı, li, lu, lü, * isim isim
 lı, li, lu, lü, * isim sifat
-sız siz, suz, süz, * isim zarf
-sız siz, suz, süz, * isim sıfat
-sız siz, suz, süz, * isim isim
+sız, siz, suz, süz, * isim zarf
+sız, siz, suz, süz, * isim sıfat
+sız, siz, suz, süz, * isim isim
 cı, ci, cu, cü, çı, çi, çu, çü, * isim isim
 cık, cik, cuk, cük, çık, çik, çuk, çük, * isim isim
 ca, ce, ça, çe, * isim isim

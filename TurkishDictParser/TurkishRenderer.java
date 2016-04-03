@@ -28,15 +28,11 @@ public class TurkishRenderer {
 
         PrintWriter writer = new PrintWriter("TurkishRoots.txt", "UTF-8");
         for (String root: renderedTurkish) {
-
             writer.println(root);
-
 
         }
         writer.close();
 
-
-        int x =0;
     }
 
     public static void createAlphabet() {
@@ -71,7 +67,6 @@ public class TurkishRenderer {
     }
 
 
-
     public static void addRenderedTurkish(String word) {
         if (!renderedTurkish.contains(word)) {
             renderedTurkish.add(word);
@@ -85,18 +80,40 @@ public class TurkishRenderer {
             Word word = turkish.get(i);
             isFound = false;
             String currentWord = word.getContent();
-            for (int j = 1; j < currentWord.length(); j++) { // her harf in th e word
-                if (turkish.contains(new Word(currentWord.substring(0, j), word.getType()))) { // we found the word
-                   FullWord suspected = isEklerProducable(currentWord.substring(j), new Word(currentWord.substring(0, j), word.getType()));
-                    if ( suspected != null && PostFiltering.isFitsTurkish(suspected)) {
-                        renderedTurkish.add(suspected.getRoot());
-                        isFound= true;
-                        break;
+
+            for (int j = 1; j < currentWord.length(); j++) { // her harf in the word
+
+
+                if (!isFound)
+                    if (turkish.contains(new Word(currentWord.substring(0, j), word.getType()))) { // we found the potential root word
+                        if (currentWord.substring(0, j).equals("badire")) {
+                            int a = 5;
+                        }
+
+                        FullWord suspected = isEklerProducable(currentWord.substring(j), new Word(currentWord.substring(0, j), word.getType()));
+                        if (suspected != null && PostFiltering.isFitsTurkish(suspected)) { // we add the root to renderedTurkish
+                            addRenderedTurkish(suspected.getRoot());// we add the root to renderedTurkish
+                            isFound = true;
+                        }
                     }
-                }
+                if (isFound)
+                    if (renderedTurkish.contains(currentWord.substring(0, j))) { // we found the potential root word
+                        if (currentWord.substring(0, j).equals("badire")) {
+                            int a = 5;
+                        }
+
+
+                        FullWord suspected = isEklerProducable(currentWord.substring(j), new Word(currentWord.substring(0, j), word.getType()));
+                        if (suspected != null && PostFiltering.isFitsTurkish(suspected)) { // if ekler are producable and it can pass the filter
+                            addRenderedTurkish(suspected.getRoot()); // we add the root to renderedTurkish
+                            isFound = true;
+                        }
+                    }
             }
-            if(!isFound)
-            renderedTurkish.add(currentWord);
+            if (!isFound) {
+                addRenderedTurkish(currentWord);
+
+            }
         }
     }
 
@@ -107,9 +124,9 @@ public class TurkishRenderer {
             return new FullWord(w.getContent(), eklerForWord);
         }
         for (int i = 1; i < ekler.length(); i++) {
-           FullWord w1 =isEklerProducable(ekler.substring(0, i), w);
-           FullWord w2 =isEklerProducable(ekler.substring(i), w);
-            if (w1!= null && w2 != null) {
+            FullWord w1 = isEklerProducable(ekler.substring(0, i), w);
+            FullWord w2 = isEklerProducable(ekler.substring(i), w);
+            if (w1 != null && w2 != null) {
                 ArrayList<String> eks = new ArrayList<>();
                 eks.addAll(w1.getEkler());
                 eks.addAll(w2.getEkler());
@@ -143,12 +160,8 @@ public class TurkishRenderer {
         read.close();
         for (int i = 0; i < 28; i++) { //for each of the files
             String currentFileName = filepath2 + "\\" + alphabet.get(i) + "\\";
-            str = "";
-            if (i < 15) {
-                currentFileName += "HARF_" + alphabet.get(i) + ".xml";
-            } else {
-                currentFileName += "liste3_" + alphabet.get(i) + ".txt";
-            }
+            currentFileName += "HARF_" + alphabet.get(i) + ".xml";
+
             InputStream bytes = new FileInputStream(currentFileName);
             Reader chars = new InputStreamReader(bytes);
             read = new BufferedReader(chars);
@@ -181,23 +194,6 @@ public class TurkishRenderer {
                     }
 
                 }
-
-/*
-                count++;
-                Scanner scanWord = new Scanner(str);
-                if(str.split(" ").length < 2){
-
-
-                str = scanWord.next().toLowerCase();
-                scanWord.close();
-                if (str.contains("þ") || str.contains("ý") || str.contains("ð")) {
-                    str = str.replace('þ', 'ş');
-                    str = str.replace('ý', 'ı');
-                    str = str.replace('ð', 'ğ');
-                }
-                addTurkish(str);
-
-                }*/
             }
             read.close();
         }
