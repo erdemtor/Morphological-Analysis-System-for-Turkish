@@ -1,6 +1,4 @@
-package TurkishDictParser; /**
- * Created by Erdem on 3/11/2016.
- */
+package TurkishDictParser;
 /**
  * Created by Erdem on 3/11/2016.
  */
