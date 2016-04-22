@@ -6,6 +6,7 @@ import java.util.*;
 
 public class TurkishRenderer {
     public static ArrayList<YapimEki> yapımEkleri;
+    public static ArrayList<String> cekimEkleri;
     public static ArrayList<Word> turkish;
     public static HashMap<Character, Character> fix;
     public static HashMap<Integer, String> alphabet;
@@ -16,6 +17,7 @@ public class TurkishRenderer {
         fullwords = new ArrayList<>();
         renderedTurkish = new TreeSet<>();
         yapımEkleri = new ArrayList<>();
+        cekimEkleri = new ArrayList<>();
         turkish = new ArrayList<Word>();
         fix = new HashMap<Character, Character>();
         alphabet = new HashMap<Integer, String>();
@@ -23,7 +25,7 @@ public class TurkishRenderer {
         fix.put('þ', 'ş');
         fix.put('ð', 'ğ');
         fix.put('ý', 'ı');
-        readArticles("yapımekleri.txt", "C:\\Users\\Erdem\\Desktop\\NLP\\Sozluk");
+        readArticles("yapımekleri.txt", "C:\\Users\\Atakan Arıkan\\Desktop\\Stuff\\NLP\\Sozluk", "çekimekleri.txt");
         renderTurkish();
 
         PrintWriter writer = new PrintWriter("TurkishRoots.txt", "UTF-8");
@@ -138,7 +140,7 @@ public class TurkishRenderer {
     }
 
 
-    public static void readArticles(String filepath1, String filepath2) throws IOException {
+    public static void readArticles(String filepath1, String filepath2, String filepath3) throws IOException {
         BufferedReader read = new BufferedReader(new FileReader(new File(filepath1)));
         String str;
         int count = 0;
@@ -197,6 +199,11 @@ public class TurkishRenderer {
             }
             read.close();
         }
+        read = new BufferedReader(new FileReader(new File(filepath3)));
+        while ((str = read.readLine()) != null) {
+            cekimEkleri.add(str);
+        }
+        read.close();
     }
 
     public static String tokenize(String line) {
