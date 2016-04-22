@@ -26,14 +26,20 @@ public class TurkishRenderer {
         fix.put('ð', 'ğ');
         fix.put('ý', 'ı');
         readArticles("yapımekleri.txt", "C:\\Users\\Atakan Arıkan\\Desktop\\Stuff\\NLP\\Sozluk", "çekimekleri.txt");
-        renderTurkish();
-
-        PrintWriter writer = new PrintWriter("TurkishRoots.txt", "UTF-8");
-        for (String root: renderedTurkish) {
-            writer.println(root);
-
+        BufferedReader read = new BufferedReader(new FileReader(new File("TurkishRoots.txt")));
+        String str;
+        while ((str = read.readLine()) != null) {
+            if (turkish.contains(new Word(str, ""))) {
+                for (Word w :
+                        turkish) {
+                    if (w.getContent().equals(str)) {
+                        System.out.println(w.getContent() + " " + w.getType());
+                    }
+                }
+            }
         }
-        writer.close();
+        read.close();
+        //renderTurkish();
 
     }
 
@@ -80,6 +86,7 @@ public class TurkishRenderer {
         boolean isFound;
         for (int i = 0; i < turkish.size(); i++) { // her kelime icin
             Word word = turkish.get(i);
+            System.out.println(word.getContent());
             isFound = false;
             String currentWord = word.getContent();
 
@@ -88,9 +95,6 @@ public class TurkishRenderer {
 
                 if (!isFound)
                     if (turkish.contains(new Word(currentWord.substring(0, j), word.getType()))) { // we found the potential root word
-                        if (currentWord.substring(0, j).equals("badire")) {
-                            int a = 5;
-                        }
 
                         FullWord suspected = isEklerProducable(currentWord.substring(j), new Word(currentWord.substring(0, j), word.getType()));
                         if (suspected != null && PostFiltering.isFitsTurkish(suspected)) { // we add the root to renderedTurkish
@@ -100,11 +104,6 @@ public class TurkishRenderer {
                     }
                 if (isFound)
                     if (renderedTurkish.contains(currentWord.substring(0, j))) { // we found the potential root word
-                        if (currentWord.substring(0, j).equals("badire")) {
-                            int a = 5;
-                        }
-
-
                         FullWord suspected = isEklerProducable(currentWord.substring(j), new Word(currentWord.substring(0, j), word.getType()));
                         if (suspected != null && PostFiltering.isFitsTurkish(suspected)) { // if ekler are producable and it can pass the filter
                             addRenderedTurkish(suspected.getRoot()); // we add the root to renderedTurkish
@@ -148,7 +147,7 @@ public class TurkishRenderer {
         while ((str = read.readLine()) != null) {
             //  String temp = tokenize(str.trim());
             String[] temp2 = str.split(" \\* ");
-            String[] ekler = temp2[0].trim().split(", ");
+            String[] ekler = temp2[0].trim().split(" ");
             String[] actions = temp2[1].trim().split(" ");
             for (int i = 0; i < ekler.length; i++) {
                 YapimEki ek = new YapimEki();
@@ -171,7 +170,10 @@ public class TurkishRenderer {
 
                 if (str.contains("<name>")) {
                     String afterNameTag = str.substring(str.indexOf("<name>") + 7, str.indexOf("</name>")).trim();
+                    if(afterNameTag.length()> 16) continue;
+
                     if (!afterNameTag.contains(" ")) {
+                        boolean isok = true;
                         while ((str = read.readLine()) != null && !str.contains("<lex_class>")) {
 
                         }
@@ -188,10 +190,26 @@ public class TurkishRenderer {
                             wordType = "sıfat";
                         } else if (lexClass.contains("zarf")) {
                             wordType = "zarf";
+                        } else {
+                            isok = false;
                         }
+                        if (isok) {
+                            Word word = new Word(afterNameTag.toLowerCase(), wordType);
+                            while ((str = read.readLine()) != null && !str.contains("<meaning_text>")) {
 
-                        Word word = new Word(afterNameTag.toLowerCase(), wordType);
-                        turkish.add(word);
+                            }
+                            if (str == null) {
+                                str = "";
+                            }
+                            String meaning_text = str.substring(str.indexOf("<meaning_text>") + 14, str.indexOf("</meaning_text>")).trim();
+                            if (word.getContent().startsWith("yaba")){
+                                int a ;
+                            }
+                            if (meaning_text.contains(" işi") && (word.getContent().endsWith("ma") || word.getContent().endsWith("me"))) {
+                                word = new Word(afterNameTag.substring(0, afterNameTag.length()-2).toLowerCase(), "fiil");
+                            }
+                            turkish.add(word);
+                        }
 
                     }
 

@@ -1,242 +1,239 @@
-a
-abil
-acağ
-acak
-alım
-ama
-an
-ar
-arak
-asın
-asınız
-ayım
-da
-dan
-de
-den
-dı
-dığ
-dık
-dıkça
-dır
-di
-diğ
-dik
-dikçe
-dir
-du
-duğ
-duk
-dukça
-dur
-dü
-düğ
-dük
-dükçe
-dür
-e
-ebil
-eceğ
-ecek
-elim
-eme
-en
-er
-erek
-esin
-esiniz
-eyim
-ı
-ım
-ımız
-ın
-ınca
-ınız
-ıp
-ır
-ıyor
-ız
-i
-im
-imiz
-in
-ince
-iniz
-ip
-ir
-iyor
-iz
-k
-ken
-la
-lar
-ları
-ların
-le
-ler
-leri
-lerin
-m
-ma
-madan
-mak
-maksızın
-makta
-maktansa
-malı
-maz
-me
-meden
-mek
-meksizin
-mekte
-mektense
-meli
-mez
-mı
-mış
-mız
-mi
-miş
-miz
-mu
-muş
-mü
-muz
-müş
-müz
-n
-nın
-nız
-nin
-niz
-nun
-nuz
-nün
-nüz
-r
-sa
-se
-sı
-sın
-sınız
-sınlar
-si
-sin
-siniz
-sinler
-su
-sun
-sunlar
-sunuz
-sü
-sün
-sünler
-sünüz
-ta
-tan
-te
-ten
-tı
-tığ
-tık
-tıkça
-tır
-ti
-tiğ
-tik
-tikçe
-tir
-tu
-tuğ
-tuk
-tukça
-tur
-tü
-tüğ
-tük
-tükçe
-tür
-u
-um
-umuz
-un
-unca
-unuz
-up
-ur
-uyor
-uz
-ü
-üm
-ümüz
-ün
-ünce
-ünüz
-üp
-ür
-üyor
-üz
-ya
-yabil
-yacağ
-yacak
-yalım
-yama
-yan
-yarak
-yasın
-yasınız
-yayım
-ydı
-ydi
-ydu
-ydü
-ye
-yebil
-yeceğ
-yecek
-yelim
-yeme
-yen
-yerek
-yesin
-yesiniz
-yeyim
-yı
-yım
-yın
-yınca
-yınız
-yıp
-yız
-yi
-yim
-yin
-yince
-yiniz
-yip
-yiz
-yken
-yla
-yle
-ymış
-ymiş
-ymuş
-ymüş
-ysa
-yse
-yu
-yum
-yun
-yunca
-yunuz
-yup
-yü
-yuz
-yüm
-yün
-yünce
-yünüz
-yüp
-yüz
+a * isim
+abil * fiil
+acağ * fiil
+acak * fiil
+alım * fiil
+ama * fiil
+an * fiil
+ar * fiil
+arak * fiil
+asın * fiil
+asınız * fiil
+ayım * fiil
+da * isim
+dan * isim
+de * isim
+den * isim
+dı * isim sıfat fiil
+dığ * fiil
+dık * fiil
+dıkça * fiil
+dır * isim sıfat
+di * isim sıfat
+diğ * fiil
+dik * fiil
+dikçe * fiil
+dir * isim sıfat
+du * fiil isim sıfat
+duğ * fiil
+duk * fiil
+dukça * fiil
+dur * isim sıfat
+dü * fiil isim sıfat
+düğ * fiil
+dük * fiil
+dükçe * fiil
+dür * isim sıfat
+e * isim
+ebil * fiil
+eceğ * fiil
+ecek * fiil
+elim * fiil
+eme * fiil
+en * fiil
+er * fiil
+erek * fiil
+esin * fiil
+esiniz * fiil
+eyim * fiil
+ı * isim
+ım * isim sıfat
+ımız * isim
+ın * fiil isim
+ınca * fiil
+ınız * fiil isim
+ıp * fiil
+ır * fiil
+ıyor * fiil
+ız * isim sıfat
+i * isim
+im * isim sıfat
+imiz * isim
+in * isim fiil
+ince * fiil
+iniz * isim fiil
+ip * fiil
+ir * fiil
+iyor * fiil
+iz * isim sıfat
+k * fiil
+ken * isim sıfat
+la * isim sıfat
+lar * fiil isim sıfat
+ları * isim
+ların * isim
+le * isim sıfat
+ler * isim sıfat fiil
+leri * isim
+lerin * isim
+m * isim fiil
+ma * fiil
+madan * fiil
+mak * fiil
+maksızın * fiil
+makta * fiil
+maktansa * fiil
+malı * fiil
+maz * fiil
+me * fiil
+meden * fiil
+mek * fiil
+meksizin * fiil
+mekte * fiil
+mektense * fiil
+meli * fiil
+mez * fiil
+mış * isim sıfat fiil
+mız * isim
+mi * isim sıfat
+miş * fiil isim sıfat
+miz * isim
+muş * fiil isim sıfat
+muz * isim
+müş * fiil isim sıfat
+müz * isim
+n * fiil isim
+nın * isim
+nız * isim fiil
+nin * isim
+niz * fiil isim
+nun * isim
+nuz * isim fiil
+nün * isim
+nüz * isim fiil
+r * fiil
+sa * sıfat fiil
+se * sıfat fiil
+sı * isim
+sın * isim
+sınız * sıfat isim
+sınlar * fiil
+si * fiil
+sin * fiil isim sıfat
+siniz * isim sıfat
+sinler * fiil
+su * isim
+sun * fiil sıfat isim
+sunlar * fiil
+sunuz * isim sıfat
+sü * isim
+sün * isim sıfat fiil
+sünler * fiil
+sünüz * isim sıfat
+ta * isim
+tan * isim
+te * isim
+ten * isim
+tı * isim sıfat fiil
+tığ * fiil
+tık * fiil
+tıkça * fiil
+tır * isim sıfat
+ti * isim sıfat fiil
+tiğ * fiil
+tik * fiil
+tikçe * fiil
+tir * isim sıfat
+tu * isim sıfat fiil
+tuğ * fiil
+tuk * fiil
+tukça * fiil
+tur * isim sıfat
+tü * isim sıfat fiil
+tüğ * fiil
+tük * fiil
+tükçe * fiil
+tür * sıfat isim
+u * isim
+um * isim sıfat
+umuz * isim
+un * isim fiil
+unca * fiil
+unuz * isim fiil
+up * fiil
+ur * fiil
+uyor * fiil
+uz * isim sıfat
+ü * isim
+üm * isim sıfat
+ümüz * isim
+ün * isim fiil
+ünce * fiil
+ünüz * fiil isim
+üp * fiil
+ür * fiil
+üyor * fiil
+üz * isim sıfat
+ya * isim
+yabil * fiil
+yacağ * fiil
+yacak * fiil
+yalım * fiil
+yama * fiil
+yan * fiil
+yarak * fiil
+yasın * fiil
+yasınız * fiil
+yayım * fiil
+ydı * isim sıfat
+ydi * isim sıfat
+ydu * isim sıfat
+ydü * isim sıfat
+ye * isim
+yebil * fiil
+yeceğ * fiil
+yecek * fiil
+yelim * fiil
+yeme * fiil
+yen * fiil
+yerek * fiil
+yesin * fiil
+yesiniz * fiil
+yeyim * fiil
+yı * isim
+yım * isim sıfat
+yın * fiil
+yınca * fiil
+yınız * fiil
+yıp * fiil
+yız * isim sıfat
+yi * isim
+yim * isim sıfat
+yin * fiil
+yince * fiil
+yiniz * fiil
+yip * fiil
+yiz * isim sıfat
+yken * isim sıfat
+yla * isim sıfat
+yle *  isim sıfat
+ymış * isim sıfat
+ymiş * isim sıfat
+ymuş * isim sıfat
+ymüş * isim sıfat
+ysa * isim sıfat
+yse * isim sıfat
+yu * isim
+yum * isim sıfat
+yun * fiil
+yunca * fiil
+yunuz * fiil
+yup * fiil
+yü * isim
+yuz * isim sıfat
+yüm * isim sıfat
+yün * fiil
+yünce * fiil
+yünüz * fiil
+yüp * fiil
+yüz * isim sıfat

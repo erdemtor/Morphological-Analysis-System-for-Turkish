@@ -44,4 +44,12 @@ public class Word   {
         return sameSame;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        for (int i = 0; i < this.getContent().length(); i++) {
+            hash = hash*31 + this.getContent().charAt(i);
+        }
+        return hash;
+    }
 }
