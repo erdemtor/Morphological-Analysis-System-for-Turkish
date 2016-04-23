@@ -12,6 +12,14 @@ public class Ek {
     public Ek() {
     }
 
+    @Override
+    public String toString() {
+        return "Ek{" +
+                "ek='" + ek + '\'' +
+                ", type='" + type + '\'' +
+                '}';
+    }
+
     public String getEk() {
         return ek;
     }

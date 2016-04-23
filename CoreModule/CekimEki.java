@@ -34,4 +34,12 @@ public class CekimEki extends Ek{
         }
         return sameSame;
     }
+
+    @Override
+    public String toString() {
+        return "CekimEki{" +
+                "from='" + from + '\'' +
+                ", ek='" + ek + '\'' +
+                '}';
+    }
 }

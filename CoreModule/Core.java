@@ -14,8 +14,6 @@ import java.util.*;
 public class Core {
     public static ArrayList<YapımEki> yapımEkleri;
     public static ArrayList<CekimEki> cekimEkleri;
-    public static ArrayList<CekimEki> cekimEkleriFake = new ArrayList<>();
-    public static ArrayList<YapımEki> yapımEkleriFake = new ArrayList<>();
     public static HashSet<Word> turkish;
     public static ArrayList<String> allEks = new ArrayList<>();
 
@@ -25,8 +23,7 @@ public class Core {
         turkish = new HashSet<>();
 
         readSuffixes("yapımekleri.txt", "çekimekleri.txt", "TurkishRoots.txt");
-        cekimEkleriFake.addAll(cekimEkleri);
-        yapımEkleriFake.addAll(yapımEkleri);
+
         Scanner scan = new Scanner(System.in);
         String input = "";
         while (!input.equals("q")) {
@@ -107,7 +104,19 @@ public class Core {
 
         return null;
     }
+    public static ArrayList<WordDetail> markSuffixes (ArrayList<String> outputs, String root) {
+        for (String possibleOutcome : outputs) {
+            String[] eklerListesi = possibleOutcome.split("-");
+            for (int i = 0; i <eklerListesi.length ; i++) {
+                String possEk = eklerListesi[i];
+                ArrayList<Ek> yapEks = getYapımEkleri(possEk)
+            }
 
+
+
+
+        }
+    }
     public static ArrayList<String> allProducable(String sequence) {
         ArrayList<String> allPoss = new ArrayList<>();
         String res = "";
@@ -123,7 +132,7 @@ public class Core {
                 if (leftPoss != null && rightPoss != null) {
                     for (String leftPos : leftPoss) {
                         for (String rightPos : rightPoss) {
-                            allPoss.add(leftPos + "+" + rightPos);
+                            allPoss.add(leftPos + "-" + rightPos);
                         }
 
                     }

@@ -40,7 +40,14 @@ public class YapımEki extends Ek {
         this.to = to;
     }
 
-
+    @Override
+    public String toString() {
+        return "YapımEki{" +
+                "from='" + from + '\'' +
+                ", to='" + to + '\'' +
+                ", ek='" + ek + '\'' +
+                '}';
+    }
 
     @Override
     public boolean equals(Object y) {
