@@ -47,6 +47,7 @@ esin * fiil
 esiniz * fiil
 eyim * fiil
 ı * isim
+i * isim fiil sıfat
 ım * isim sıfat
 ımız * isim
 ın * fiil isim

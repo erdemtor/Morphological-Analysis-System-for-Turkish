@@ -28,8 +28,7 @@ public class Core {
         String input = "";
         while (!input.equals("q")) {
             input = scan.next();
-            ArrayList<String> answer = allProducable(input);
-            ArrayList<WordDetail> wds = markSuffixes(answer, "pat");
+            testWords(input);
             int x = 1;
         }
 
@@ -38,14 +37,54 @@ public class Core {
     private static void testWords(String input) {
 
         for (int i = 1; i < input.length(); i++) {
-            ArrayList<WordDetail> wds = new ArrayList<>();
             if (turkish.contains(new Word(input.substring(0, i), ""))) {
-                WordDetail w1 = isEklerProducable(input.substring(i), new Word(input.substring(0, i), ""), input.substring(i));
+                ArrayList<String> answer = allProducable(input.substring(i));
+                ArrayList<WordDetail> wds = markSuffixes(answer, input.substring(0, i));
+                ArrayList<WordDetail> filtered = filter(wds);
+
                 System.out.println();
             }
         }
     }
+    public static ArrayList<WordDetail> filter(ArrayList<WordDetail> wds){
+        ArrayList<WordDetail> filtered = new ArrayList<>();
+        for (WordDetail wd : wds) {
+            Boolean isOkay = true;
+            ArrayList<Ek> ekler = wd.getEkler();
+            String currentState = getWord(wd.getRoot()).getType();
+            for (Ek ek : ekler) {
+                if (ek instanceof YapımEki) {
+                    YapımEki yek = (YapımEki) ek;
+                    if (!currentState.equals(yek.getFrom())) {
+                        isOkay = false;
+                        break;
+                    } else {
+                        currentState = yek.getTo();
+                    }
+                }
+                if (ek instanceof CekimEki) {
+                    CekimEki cek = (CekimEki) ek;
+                    if (!currentState.equals(cek.getFrom())) {
+                        isOkay = false;
+                        break;
+                    }
+                }
+            }
+            if (isOkay) {
+                filtered.add(wd);
+            }
+        }
+        return filtered;
+    }
 
+    public static Word getWord(String content) {
+        for (Word w : turkish) {
+            if (w.getContent().equals(content))
+                return w;
+
+        }
+        return null;
+    }
 
     public static ArrayList<Ek> getYapımEkleri(String content) {
         ArrayList<Ek> result = new ArrayList<>();
@@ -58,6 +97,7 @@ public class Core {
         if (result.size() == 0) return null;
         return result;
     }
+
 
     public static ArrayList<Ek> getCekimEkleri(String content) {
         ArrayList<Ek> result = new ArrayList<>();
@@ -119,10 +159,10 @@ public class Core {
                 String possEk = eklerListesi[i];
                 ArrayList<Ek> yapEks = getYapımEkleri(possEk);
                 ArrayList<Ek> cekEks = getCekimEkleri(possEk);
-                    temp = new ArrayList<>();
+                temp = new ArrayList<>();
                 if (yapEks != null) {
-                    for (int j = 0; j <yapEks.size(); j++) {
-                        if (i == 0){
+                    for (int j = 0; j < yapEks.size(); j++) {
+                        if (i == 0) {
                             ArrayList<Ek> asd = new ArrayList<>();
                             asd.add(yapEks.get(j));
                             WordDetail wd = new WordDetail(root, asd);
@@ -140,7 +180,7 @@ public class Core {
                 }
                 if (cekEks != null) {
                     for (Ek e : cekEks) {
-                        if (i == 0){
+                        if (i == 0) {
                             ArrayList<Ek> asd = new ArrayList<>();
                             asd.add(e);
                             WordDetail wd = new WordDetail(root, asd);
@@ -150,7 +190,7 @@ public class Core {
                                 ArrayList<Ek> asd = (ArrayList<Ek>) wdt.getEkler().clone();
                                 asd.add(e);
                                 WordDetail wd = new WordDetail(root, asd);
-                                    temp.add(wd);
+                                temp.add(wd);
                             }
                         }
                     }
@@ -161,12 +201,12 @@ public class Core {
 
         }
         HashSet<WordDetail> tempos = new HashSet<>();
-        for (WordDetail wd: resAll) {
+        for (WordDetail wd : resAll) {
             String ress = "";
-            for (int i = 0; i <wd.getEkler().size(); i++) {
+            for (int i = 0; i < wd.getEkler().size(); i++) {
                 ress += wd.getEkler().get(i).getEk();
             }
-            if (ress.equals(correctOutput)){
+            if (ress.equals(correctOutput)) {
                 tempos.add(wd);
             }
         }

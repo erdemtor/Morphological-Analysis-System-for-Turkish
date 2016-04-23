@@ -84,7 +84,8 @@ gın gin gun gün kın kin kun kün * fiil sıfat
 ış iş uş üş * fiil isim
 k * fiil isim
 k * fiil sıfat
-m * fiil isim
+ım * fiil isim
+im * fiil isim
 me ma  * fiil isim
 me ma  * fiil sıfat
 mak mek * fiil isim
