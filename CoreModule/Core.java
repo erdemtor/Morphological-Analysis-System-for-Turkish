@@ -29,7 +29,8 @@ public class Core {
         while (!input.equals("q")) {
             input = scan.next();
             ArrayList<String> answer = allProducable(input);
-            System.out.println(answer);
+           ArrayList<WordDetail> wds = markSuffixes(answer, "gor");
+            System.out.println();
         }
 
     }
@@ -104,19 +105,49 @@ public class Core {
 
         return null;
     }
-    public static ArrayList<WordDetail> markSuffixes (ArrayList<String> outputs, String root) {
+
+    public static ArrayList<WordDetail> markSuffixes(ArrayList<String> outputs, String root) {
+        ArrayList<WordDetail> res = new ArrayList<>();
         for (String possibleOutcome : outputs) {
             String[] eklerListesi = possibleOutcome.split("-");
-            for (int i = 0; i <eklerListesi.length ; i++) {
+            for (int i = 0; i < eklerListesi.length; i++) {
                 String possEk = eklerListesi[i];
-                ArrayList<Ek> yapEks = getYapımEkleri(possEk)
+                ArrayList<Ek> yapEks = getYapımEkleri(possEk);
+                ArrayList<Ek> cekEks = getCekimEkleri(possEk);
+                if (yapEks != null) {
+                    for (Ek e : yapEks) {
+                        if (res.size() == 0) {
+                            ArrayList<Ek> temp = new ArrayList<>();
+                            temp.add(e);
+                            WordDetail wd = new WordDetail(root, temp);
+                            res.add(wd);
+                        } else {
+                            for (WordDetail wdTemp: res) {
+                                wdTemp.getEkler().add(e);
+                            }
+                        }
+
+                    }
+                }
+                if (cekEks != null) {
+                    for (Ek e : cekEks) {
+                        if (res.size() == 0) {
+                            ArrayList<Ek> temp = new ArrayList<>();
+                            temp.add(e);
+                            WordDetail wd = new WordDetail(root, temp);
+                            res.add(wd);
+                        } else {
+                            for (WordDetail wdTemp: res) {
+                                wdTemp.getEkler().add(e);
+                            }
+                        }
+                    }
+                }
             }
-
-
-
-
         }
+        return res;
     }
+
     public static ArrayList<String> allProducable(String sequence) {
         ArrayList<String> allPoss = new ArrayList<>();
         String res = "";
