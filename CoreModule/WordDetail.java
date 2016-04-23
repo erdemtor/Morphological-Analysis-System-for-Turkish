@@ -29,6 +29,18 @@ public class WordDetail {
     }
 
     @Override
+    public int hashCode() {
+        int hash = this.getRoot().hashCode();
+        hash += this.getEkler().hashCode();
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.hashCode() == obj.hashCode();
+    }
+
+    @Override
     public String toString() {
         return "WordDetail{" +
                 "root='" + root + '\'' +

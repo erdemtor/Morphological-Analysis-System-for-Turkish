@@ -41,6 +41,11 @@ public class YapımEki extends Ek {
     }
 
     @Override
+    public int hashCode() {
+        return 3*this.getEk().hashCode() + 5*this.getFrom().hashCode() + 31*this.getTo().hashCode();
+    }
+
+    @Override
     public String toString() {
         return "YapımEki{" +
                 "from='" + from + '\'' +
@@ -56,7 +61,7 @@ public class YapımEki extends Ek {
             YapımEki yReal = (YapımEki) y;
             sameSame = this.getEk().equals(yReal.getEk());
         }
-        return sameSame;
+        return sameSame || this.hashCode() == y.hashCode();
     }
 
 

@@ -29,8 +29,8 @@ public class Core {
         while (!input.equals("q")) {
             input = scan.next();
             ArrayList<String> answer = allProducable(input);
-           ArrayList<WordDetail> wds = markSuffixes(answer, "gor");
-            System.out.println();
+            ArrayList<WordDetail> wds = markSuffixes(answer, "pat");
+            int x = 1;
         }
 
     }
@@ -108,44 +108,70 @@ public class Core {
 
     public static ArrayList<WordDetail> markSuffixes(ArrayList<String> outputs, String root) {
         ArrayList<WordDetail> res = new ArrayList<>();
+        ArrayList<WordDetail> resAll = new ArrayList<>();
+        ArrayList<WordDetail> trueRes = new ArrayList<>();
+        String correctOutput = "";
         for (String possibleOutcome : outputs) {
+            correctOutput = possibleOutcome.replaceAll("-", "");
             String[] eklerListesi = possibleOutcome.split("-");
+            ArrayList<WordDetail> temp = new ArrayList<>();
             for (int i = 0; i < eklerListesi.length; i++) {
                 String possEk = eklerListesi[i];
                 ArrayList<Ek> yapEks = getYapımEkleri(possEk);
                 ArrayList<Ek> cekEks = getCekimEkleri(possEk);
+                    temp = new ArrayList<>();
                 if (yapEks != null) {
-                    for (Ek e : yapEks) {
-                        if (res.size() == 0) {
-                            ArrayList<Ek> temp = new ArrayList<>();
-                            temp.add(e);
-                            WordDetail wd = new WordDetail(root, temp);
-                            res.add(wd);
+                    for (int j = 0; j <yapEks.size(); j++) {
+                        if (i == 0){
+                            ArrayList<Ek> asd = new ArrayList<>();
+                            asd.add(yapEks.get(j));
+                            WordDetail wd = new WordDetail(root, asd);
+                            temp.add(wd);
                         } else {
-                            for (WordDetail wdTemp: res) {
-                                wdTemp.getEkler().add(e);
+                            for (WordDetail wdt : res) {
+                                ArrayList<Ek> asd = (ArrayList<Ek>) wdt.getEkler().clone();
+                                asd.add(yapEks.get(j));
+                                WordDetail wd = new WordDetail(root, asd);
+                                temp.add(wd);
+
                             }
                         }
-
                     }
                 }
                 if (cekEks != null) {
                     for (Ek e : cekEks) {
-                        if (res.size() == 0) {
-                            ArrayList<Ek> temp = new ArrayList<>();
-                            temp.add(e);
-                            WordDetail wd = new WordDetail(root, temp);
-                            res.add(wd);
+                        if (i == 0){
+                            ArrayList<Ek> asd = new ArrayList<>();
+                            asd.add(e);
+                            WordDetail wd = new WordDetail(root, asd);
+                            temp.add(wd);
                         } else {
-                            for (WordDetail wdTemp: res) {
-                                wdTemp.getEkler().add(e);
+                            for (WordDetail wdt : res) {
+                                ArrayList<Ek> asd = (ArrayList<Ek>) wdt.getEkler().clone();
+                                asd.add(e);
+                                WordDetail wd = new WordDetail(root, asd);
+                                    temp.add(wd);
                             }
                         }
                     }
                 }
+                res = temp;
+            }
+            resAll.addAll(res);
+
+        }
+        HashSet<WordDetail> tempos = new HashSet<>();
+        for (WordDetail wd: resAll) {
+            String ress = "";
+            for (int i = 0; i <wd.getEkler().size(); i++) {
+                ress += wd.getEkler().get(i).getEk();
+            }
+            if (ress.equals(correctOutput)){
+                tempos.add(wd);
             }
         }
-        return res;
+        trueRes.addAll(tempos);
+        return trueRes;
     }
 
     public static ArrayList<String> allProducable(String sequence) {

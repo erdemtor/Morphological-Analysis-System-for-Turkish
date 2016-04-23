@@ -32,9 +32,12 @@ public class CekimEki extends Ek{
             CekimEki yReal = (CekimEki) y;
             sameSame = this.getEk().equals(yReal.getEk());
         }
-        return sameSame;
+        return sameSame || this.hashCode() == y.hashCode();
     }
-
+    @Override
+    public int hashCode() {
+        return 3*this.getEk().hashCode() + 17*this.getFrom().hashCode();
+    }
     @Override
     public String toString() {
         return "CekimEki{" +
