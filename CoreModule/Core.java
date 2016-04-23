@@ -1,5 +1,6 @@
 import TurkishDictParser.Word;
 import TurkishDictParser.YapimEki;
+import sun.reflect.generics.tree.Tree;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -111,41 +112,6 @@ public class Core {
         return result;
     }
 
-    public static WordDetail isEklerProducable(String ekler, Word w, String initial) {
-
-        if (cekimEkleri.contains(new CekimEki(ekler, ""))) {
-            ArrayList<Ek> eks = new ArrayList<>();
-            eks.add(new CekimEki(ekler, ""));
-
-            return new WordDetail(w.getContent(), eks);
-
-        }
-        if (yapımEkleri.contains(new YapımEki(ekler, "", ""))) {
-            ArrayList<Ek> eks = new ArrayList<>();
-            eks.add(new YapımEki(ekler, "", ""));
-
-            return (new WordDetail(w.getContent(), eks));
-
-        }
-        for (int i = 1; i < ekler.length(); i++) {
-            String candidate1 = ekler.substring(0, i);
-            String candidate2 = ekler.substring(i);
-            WordDetail w1 = isEklerProducable(candidate1, w, initial);
-            if (w1 != null) {
-                WordDetail w2 = isEklerProducable(candidate2, w, initial);
-                if (w1 != null && w2 != null) {
-                    WordDetail listElement = new WordDetail(w.getContent(), null);
-                    listElement.setEkler(w1.getEkler());
-                    listElement.getEkler().addAll(w2.getEkler());
-                    return listElement;
-                }
-            }
-
-        }
-
-        return null;
-    }
-
     public static ArrayList<WordDetail> markSuffixes(ArrayList<String> outputs, String root) {
         ArrayList<WordDetail> res = new ArrayList<>();
         ArrayList<WordDetail> resAll = new ArrayList<>();
@@ -172,8 +138,14 @@ public class Core {
                                 ArrayList<Ek> asd = (ArrayList<Ek>) wdt.getEkler().clone();
                                 asd.add(yapEks.get(j));
                                 WordDetail wd = new WordDetail(root, asd);
-                                temp.add(wd);
 
+                                String ress = "";
+                                for (int k = 0; k < wd.getEkler().size(); k++) {
+                                    ress += wd.getEkler().get(k).getEk();
+                                }
+                                if (ress.length() < correctOutput.length() || ress.equals(correctOutput) ) {
+                                    temp.add(wd);
+                                }
                             }
                         }
                     }
@@ -190,7 +162,20 @@ public class Core {
                                 ArrayList<Ek> asd = (ArrayList<Ek>) wdt.getEkler().clone();
                                 asd.add(e);
                                 WordDetail wd = new WordDetail(root, asd);
-                                temp.add(wd);
+                                String ress = "";
+                                for (int k = 0; k < wd.getEkler().size(); k++) {
+                                    ress += wd.getEkler().get(k).getEk();
+                                }
+                                if (ress.length() < correctOutput .length() || ress.equals(correctOutput) ) {
+                                    if(ress.equals(correctOutput) ){
+                                       if(wd.getEkler().size() * 2  <= correctOutput.length()) {
+                                           temp.add(wd);
+                                       }
+                                    }else {
+                                        temp.add(wd);
+                                    }
+
+                                }
                             }
                         }
                     }
@@ -237,21 +222,15 @@ public class Core {
             }
 
         }
-        if (allPoss.size() > 0) return allPoss;
-        return null;
-    }
-
-    public static String producable(String sequence) {
-        if (allEks.contains(sequence)) {
-            return sequence;
+        TreeSet<String> temp = new TreeSet<>();
+        for (String s: allPoss) {
+            temp.add(s);
         }
-        for (int i = 1; i < sequence.length(); i++) {
-            String temp1 = producable(sequence.substring(0, i));
-            String temp2 = producable(sequence.substring(i));
-            if (temp1 != null && temp2 != null) {
-                return temp1 + "-" + temp2;
-            }
+        ArrayList<String> finalAllPos = new ArrayList<>();
+        for (String s: temp) {
+            finalAllPos.add(s);
         }
+        if (finalAllPos.size() > 0) return finalAllPos;
         return null;
     }
 

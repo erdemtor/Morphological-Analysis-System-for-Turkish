@@ -9055,6 +9055,7 @@ kaolin isim
 kaolinit isim
 kaos isim
 kap fiil
+kapı isim
 kapamacı isim
 kaparoz isim
 kapasite isim
