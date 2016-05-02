@@ -43,6 +43,7 @@ public class TurkishRenderer {
 
     }
 
+    @SuppressWarnings("Duplicates")
     public static void createAlphabet() {
         alphabet.put(0, "a");
         alphabet.put(1, "b");
@@ -139,6 +140,7 @@ public class TurkishRenderer {
     }
 
 
+    @SuppressWarnings("Duplicates")
     public static void readArticles(String filepath1, String filepath2, String filepath3) throws IOException {
         BufferedReader read = new BufferedReader(new FileReader(new File(filepath1)));
         String str;

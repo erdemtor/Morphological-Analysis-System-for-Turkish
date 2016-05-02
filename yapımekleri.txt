@@ -42,8 +42,9 @@ mtırak * isim sıfat
 rak rek sak sek * isim isim
 sı si su sü * isim isim
 sı si su sü * isim sıfat
-şın şin * isim sıfatm
+şın şin * isim sıfat
 şın şin * isim isim
+deki daki * isim sıfat
 t * isim isim
 t * isim sıfat
 z * isim isim

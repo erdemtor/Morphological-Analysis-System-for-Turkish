@@ -19,7 +19,7 @@ dığ * fiil
 dık * fiil
 dıkça * fiil
 dır * isim sıfat
-di * isim sıfat
+di * isim sıfat fiil
 diğ * fiil
 dik * fiil
 dikçe * fiil
@@ -47,7 +47,6 @@ esin * fiil
 esiniz * fiil
 eyim * fiil
 ı * isim
-i * isim fiil sıfat
 ım * isim sıfat
 ımız * isim
 ın * fiil isim
@@ -121,7 +120,7 @@ sınız * sıfat isim
 sınlar * fiil
 si * fiil
 sin * fiil isim sıfat
-siniz * isim sıfat
+siniz * isim sıfat fiil
 sinler * fiil
 su * isim
 sun * fiil sıfat isim

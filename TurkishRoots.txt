@@ -1245,6 +1245,7 @@ atışmak fiil
 atıştır fiil
 atıştırmalık isim
 aut isim
+av isim
 avadancı isim
 avadanlık isim
 avam isim
