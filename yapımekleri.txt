@@ -83,6 +83,7 @@ gın gin gun gün kın kin kun kün * fiil sıfat
 ıcı ici ucu ücü * fiil isim
 ıcı ici ucu ücü * fiil sıfat
 ış iş uş üş * fiil isim
+ış iş uş üş * fiil fiil
 k * fiil isim
 k * fiil sıfat
 ım * fiil isim

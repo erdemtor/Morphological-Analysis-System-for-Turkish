@@ -27,7 +27,7 @@ public class Core {
         createAlphabet();
         readTurkish("D:\\NLP\\Sozluk");
         readSuffixes("yapımekleri.txt", "çekimekleri.txt", "TurkishRoots.txt");
-
+        readMetuBankAndProcess("turkish_metu_sabanci_train.conll");
         Scanner scan = new Scanner(System.in);
         String input = "";
         while (!input.equals("q")) {
@@ -37,6 +37,65 @@ public class Core {
         }
 
     }
+    public static boolean isDouble(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException nfe) {}
+        return false;
+    }
+
+    private static String tokenizeString(String potentialToken) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (potentialToken.length() > 0) { // parseDouble thinks "1980." a double. avoid that.
+            if (!Character.isDigit(potentialToken.charAt(potentialToken.length() - 1)) && !Character.isLetter(potentialToken.charAt(potentialToken.length() - 1))) {
+                potentialToken = potentialToken.substring(0, potentialToken.length() - 1);
+            }
+        }
+        if(isDouble(potentialToken) && isDouble(potentialToken.replace(",","."))){
+
+            return potentialToken;
+        }
+        else{
+            for (int j = 0; j < potentialToken.length(); j++) {
+                if (Character.isDigit(potentialToken.charAt(j)) || Character.isLetter(potentialToken.charAt(j))) {
+
+                    stringBuilder.append(potentialToken.charAt(j));
+                }
+            }
+
+
+        }
+        return stringBuilder.toString();
+    }
+    private static void readMetuBankAndProcess(String filepath) throws IOException {
+        BufferedReader read;
+        String str;
+        InputStream bytes = new FileInputStream(filepath);
+        Reader chars = new InputStreamReader(bytes);
+        read = new BufferedReader(chars);
+        int cnt = 0;
+        int correct = 0;
+        while ((str = read.readLine()) != null) {
+            if (str.contains("\t")) {
+                String[] tokens = str.split("\t");
+                if (tokens.length > 2 && !tokens[1].contains("_") && !tokens[2].contains("_") && !tokens[3].toLowerCase().equals("punc") && tokens[1].length() < 13) {
+                    cnt++;
+                    System.out.print("Results for " + tokens[1].toLowerCase() + " (" + tokens[2] + ") : " );
+                    ArrayList<String> predictedRoots = testWords(tokenizeString(tokens[1]));
+                    if (predictedRoots.get(predictedRoots.size()-1).equals(tokens[2])) {
+                        correct++;
+                    }
+                    if (cnt == 5000) {
+                        System.out.println("as");
+                    }
+                    System.out.println(predictedRoots.toString() + " " + correct + "/" + cnt);
+                }
+            }
+        }
+        System.out.println(correct + "/" + cnt + " = " + 100*correct/cnt +"%");
+    }
+
     public static void createAlphabet() {
         alphabet.put(0, "a");
         alphabet.put(1, "b");
@@ -67,6 +126,7 @@ public class Core {
         alphabet.put(26, "y");
         alphabet.put(27, "z");
     }
+
     public static void readTurkish(String filepath) throws IOException {
         BufferedReader read;
         String str;
@@ -113,11 +173,11 @@ public class Core {
                                 str = "";
                             }
                             String meaning_text = str.substring(str.indexOf("<meaning_text>") + 14, str.indexOf("</meaning_text>")).trim();
-                            if (word.getContent().startsWith("yaba")){
-                                int a ;
+                            if (word.getContent().startsWith("yaba")) {
+                                int a;
                             }
                             if (meaning_text.contains(" işi") && (word.getContent().endsWith("ma") || word.getContent().endsWith("me"))) {
-                                word = new Word(afterNameTag.substring(0, afterNameTag.length()-2).toLowerCase(), "fiil");
+                                word = new Word(afterNameTag.substring(0, afterNameTag.length() - 2).toLowerCase(), "fiil");
                             }
                             turkish.add(word);
                         }
@@ -128,62 +188,67 @@ public class Core {
             }
         }
     }
-    private static void testWords(String input) {
 
+    private static ArrayList<String> testWords(String input) {
+        ArrayList<String> result = new ArrayList<>();
+        boolean isAnyCekimEkiCombinationFound = false;
         for (int i = 1; i < input.length(); i++) {
             if (turkish.contains(new Word(input.substring(0, i), ""))) {
-                ArrayList<String> answer = allProducable(input.substring(i), cekimEkleriStr);
+                ArrayList<String> answer = allProducable(input.substring(i), cekimEkleriStr); // if null it is not produce-able
                 ArrayList<WordDetail> filtered = new ArrayList<>();
-               if (answer != null){
-                   ArrayList<WordDetail> wds = markSuffixes(answer, input.substring(0, i), false, true);
-                   filtered = filter(wds);
-                   // 1
-                   if (filtered.size() != 0) {
-                       String rootWithYapimEkleri = input.substring(0, i);
-                       for (int j = 1; j < rootWithYapimEkleri.length(); j++) {
-                           if (turkishRoots.contains(new Word(rootWithYapimEkleri.substring(0, j), ""))) {
-                               ArrayList<String> answer2 = allProducable(rootWithYapimEkleri.substring(j), yapimEkleriStr);
-                               if (answer2 != null) {
-                                   ArrayList<WordDetail> wds2 = markSuffixes(answer2, rootWithYapimEkleri.substring(0, j), true, false);
-                                   ArrayList<WordDetail> filtered2 = filter(wds2);
-                                   //2
-                                   System.out.println();
-                               }
-                           }
-                       }
-                       if (filtered.size() == 0)
-                           filtered = wds;
-
-                       System.out.println("asd");
-                   }
-               }
-                if (filtered.size() == 0 || answer == null) {
-                   String rootWithYapimEkleri = input;
-                   for (int j = 1; j < rootWithYapimEkleri.length(); j++) {
-                       if (turkishRoots.contains(new Word(rootWithYapimEkleri.substring(0, j), ""))) {
-                           ArrayList<String> answer2 = allProducable(rootWithYapimEkleri.substring(j), yapimEkleriStr);
-                           if (answer2 != null) {
-                               ArrayList<WordDetail> wds2 = markSuffixes(answer2, rootWithYapimEkleri.substring(0, j), true, false);
-                               ArrayList<WordDetail> filtered2 = filter(wds2);
-                               //3
-                               System.out.println();
-                           }
-                       }
-                   }
-               }
-
-
-                System.out.println();
+                if (answer != null) {
+                    ArrayList<WordDetail> wds = markSuffixes(answer, input.substring(0, i), false, true);
+                    filtered = filter(wds, false);
+                } // 1
+                if (filtered.size() != 0) {
+                    checkYapimEkleri(input.substring(0, i), result);
+                    isAnyCekimEkiCombinationFound = true;
+                }
+//                System.out.println("-----" +input.substring(0, i) + "------" );
             }
         }
-        System.out.println("bitti");
+        if (!isAnyCekimEkiCombinationFound) {
+            checkYapimEkleri(input, result);
+        }
+        return result;
+        //  System.out.println("bitti");
     }
-    public static ArrayList<WordDetail> filter(ArrayList<WordDetail> wds){
+
+    public static void checkYapimEkleri(String rootWithYapimEkleri, ArrayList<String> res) {
+        // cekim eki kombinasyonu found at this point
+        // possible root can be with yapim eks
+        boolean anyYapimEkiCombinationFound = false;
+        for (int j = 1; j < rootWithYapimEkleri.length(); j++) {
+            String rootCandidateWithoutYapimEkis = rootWithYapimEkleri.substring(0, j);
+            if (turkishRoots.contains(new Word(rootCandidateWithoutYapimEkis, ""))) {
+                ArrayList<String> answer2 = allProducable(rootWithYapimEkleri.substring(j), yapimEkleriStr);
+                ArrayList<WordDetail> filtered2 = new ArrayList<>();
+                if (answer2 != null) {
+                    ArrayList<WordDetail> wds2 = markSuffixes(answer2, rootCandidateWithoutYapimEkis, true, false);
+                    filtered2 = filter(wds2, true);
+                }
+                if (filtered2.size() == 0) {
+
+                } else {
+                    res.add(rootCandidateWithoutYapimEkis);
+                    anyYapimEkiCombinationFound = true;
+                }
+            }
+        }
+        if (!anyYapimEkiCombinationFound) {
+            res.add(rootWithYapimEkleri);
+        }
+    }
+
+    public static ArrayList<WordDetail> filter(ArrayList<WordDetail> wds, boolean isYapımEki) {
         ArrayList<WordDetail> filtered = new ArrayList<>();
         for (WordDetail wd : wds) {
             Boolean isOkay = true;
             ArrayList<Ek> ekler = wd.getEkler();
             String currentState = getWord(wd.getRoot()).getType();
+            if (!isYapımEki && currentState.equals("sıfat")) {
+                currentState = "isim";
+            }
             for (Ek ek : ekler) {
                 if (ek instanceof YapımEki) {
                     YapımEki yek = (YapımEki) ek;
@@ -192,11 +257,18 @@ public class Core {
                         break;
                     } else {
                         currentState = yek.getTo();
+                        if (!isYapımEki && currentState.equals("sıfat")) {
+                            currentState = "isim";
+                        }
                     }
                 }
                 if (ek instanceof CekimEki) {
                     CekimEki cek = (CekimEki) ek;
-                    if (!currentState.equals(cek.getFrom())) {
+                    String from = cek.getFrom();
+                    if (cek.getFrom().equals("sıfat")) {
+                        from = "isim";
+                    }
+                    if (!currentState.equals(from)) {
                         isOkay = false;
                         break;
                     }
@@ -273,7 +345,7 @@ public class Core {
                                 for (int k = 0; k < wd.getEkler().size(); k++) {
                                     ress += wd.getEkler().get(k).getEk();
                                 }
-                                if (ress.length() < correctOutput.length() || ress.equals(correctOutput) ) {
+                                if (ress.length() < correctOutput.length() || ress.equals(correctOutput)) {
                                     temp.add(wd);
                                 }
                             }
@@ -296,12 +368,12 @@ public class Core {
                                 for (int k = 0; k < wd.getEkler().size(); k++) {
                                     ress += wd.getEkler().get(k).getEk();
                                 }
-                                if (ress.length() < correctOutput .length() || ress.equals(correctOutput) ) {
-                                    if(ress.equals(correctOutput) ){
-                                       if(wd.getEkler().size() * 2  <= correctOutput.length()) {
-                                           temp.add(wd);
-                                       }
-                                    }else {
+                                if (ress.length() < correctOutput.length() || ress.equals(correctOutput)) {
+                                    if (ress.equals(correctOutput)) {
+                                        if (wd.getEkler().size() * 2 <= correctOutput.length()) {
+                                            temp.add(wd);
+                                        }
+                                    } else {
                                         temp.add(wd);
                                     }
 
@@ -353,11 +425,11 @@ public class Core {
 
         }
         TreeSet<String> temp = new TreeSet<>();
-        for (String s: allPoss) {
+        for (String s : allPoss) {
             temp.add(s);
         }
         ArrayList<String> finalAllPos = new ArrayList<>();
-        for (String s: temp) {
+        for (String s : temp) {
             finalAllPos.add(s);
         }
         if (finalAllPos.size() > 0) return finalAllPos;
