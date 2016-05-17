@@ -27,21 +27,42 @@ public class Core {
         createAlphabet();
         readTurkish("D:\\NLP\\Sozluk");
         readSuffixes("yapımekleri.txt", "çekimekleri.txt", "TurkishRoots.txt");
-        readMetuBankAndProcess("turkish_metu_sabanci_train.conll");
+        //  readMetuBankAndProcess("turkish_metu_sabanci_train.conll");
         Scanner scan = new Scanner(System.in);
         String input = "";
-        while (!input.equals("q")) {
-            input = scan.next();
-            testWords(input);
-            int x = 1;
+        int cnt = 0;
+        int win = 0;
+        BufferedReader read = new BufferedReader(new FileReader(new File("stemmed")));
+
+        while ((input = read.readLine()) != null) {
+            boolean seks = false;
+            String[] temp = input.split("\t");
+            if (temp[0].length() < 15){
+                ArrayList<String> x = testWords(temp[0], true);
+                cnt++;
+                if (x.contains(temp[1])) {
+                    win++;
+                    seks = true;
+                }
+                if (!seks) {
+                    System.out.print(temp[0] + ":     ");
+                    System.out.print(x.toString() + "\t\t");
+                    System.out.println(win + "/" + cnt + " = " + ((double) win / (double) cnt));
+                }
+            }
+
+
+
         }
 
     }
+
     public static boolean isDouble(String str) {
         try {
             Double.parseDouble(str);
             return true;
-        } catch (NumberFormatException nfe) {}
+        } catch (NumberFormatException nfe) {
+        }
         return false;
     }
 
@@ -52,11 +73,10 @@ public class Core {
                 potentialToken = potentialToken.substring(0, potentialToken.length() - 1);
             }
         }
-        if(isDouble(potentialToken) && isDouble(potentialToken.replace(",","."))){
+        if (isDouble(potentialToken) && isDouble(potentialToken.replace(",", "."))) {
 
             return potentialToken;
-        }
-        else{
+        } else {
             for (int j = 0; j < potentialToken.length(); j++) {
                 if (Character.isDigit(potentialToken.charAt(j)) || Character.isLetter(potentialToken.charAt(j))) {
 
@@ -68,6 +88,7 @@ public class Core {
         }
         return stringBuilder.toString();
     }
+
     private static void readMetuBankAndProcess(String filepath) throws IOException {
         BufferedReader read;
         String str;
@@ -81,9 +102,9 @@ public class Core {
                 String[] tokens = str.split("\t");
                 if (tokens.length > 2 && !tokens[1].contains("_") && !tokens[2].contains("_") && !tokens[3].toLowerCase().equals("punc") && tokens[1].length() < 13) {
                     cnt++;
-                    System.out.print("Results for " + tokens[1].toLowerCase() + " (" + tokens[2] + ") : " );
-                    ArrayList<String> predictedRoots = testWords(tokenizeString(tokens[1]));
-                    if (predictedRoots.get(predictedRoots.size()-1).equals(tokens[2])) {
+                    System.out.print("Results for " + tokens[1].toLowerCase() + " (" + tokens[2] + ") : ");
+                    ArrayList<String> predictedRoots = testWords(tokenizeString(tokens[1]), false);
+                    if (predictedRoots.get(predictedRoots.size() - 1).equals(tokens[2])) {
                         correct++;
                     }
                     if (cnt == 5000) {
@@ -93,7 +114,7 @@ public class Core {
                 }
             }
         }
-        System.out.println(correct + "/" + cnt + " = " + 100*correct/cnt +"%");
+        System.out.println(correct + "/" + cnt + " = " + 100 * correct / cnt + "%");
     }
 
     public static void createAlphabet() {
@@ -177,6 +198,7 @@ public class Core {
                                 int a;
                             }
                             if (meaning_text.contains(" işi") && (word.getContent().endsWith("ma") || word.getContent().endsWith("me"))) {
+                                turkish.add(word);
                                 word = new Word(afterNameTag.substring(0, afterNameTag.length() - 2).toLowerCase(), "fiil");
                             }
                             turkish.add(word);
@@ -189,26 +211,49 @@ public class Core {
         }
     }
 
-    private static ArrayList<String> testWords(String input) {
+    private static ArrayList<String> testWords(String input, boolean onlycekim) {
+        if (input.equals("açıkladım")) {
+            System.out.println();
+        }
+
         ArrayList<String> result = new ArrayList<>();
         boolean isAnyCekimEkiCombinationFound = false;
         for (int i = 1; i < input.length(); i++) {
             if (turkish.contains(new Word(input.substring(0, i), ""))) {
-                ArrayList<String> answer = allProducable(input.substring(i), cekimEkleriStr); // if null it is not produce-able
+                int lastindex = input.length();
+                String tempinp = input.substring(i);
+                if (tempinp.contains("ğ")) {
+                    lastindex = tempinp.lastIndexOf("ğ");
+                    tempinp = tempinp.substring(0, lastindex) + "k";
+                }
+                ArrayList<String> answer = allProducable(tempinp, cekimEkleriStr); // if null it is not produce-able
                 ArrayList<WordDetail> filtered = new ArrayList<>();
                 if (answer != null) {
                     ArrayList<WordDetail> wds = markSuffixes(answer, input.substring(0, i), false, true);
                     filtered = filter(wds, false);
                 } // 1
                 if (filtered.size() != 0) {
-                    checkYapimEkleri(input.substring(0, i), result);
-                    isAnyCekimEkiCombinationFound = true;
+                    if (onlycekim) {
+                        result.add(input.substring(0, i));
+                    } else {
+                        checkYapimEkleri(input.substring(0, i), result);
+                        isAnyCekimEkiCombinationFound = true;
+                    }
                 }
 //                System.out.println("-----" +input.substring(0, i) + "------" );
             }
         }
-        if (!isAnyCekimEkiCombinationFound) {
+        if (!isAnyCekimEkiCombinationFound && !onlycekim) {
             checkYapimEkleri(input, result);
+        }
+
+        if (result.size() < 1) {
+            int lastindex = input.length();
+            if (input.substring(input.length() / 2).contains("ğ")) {
+                lastindex = input.lastIndexOf("ğ");
+                input = input.substring(0, lastindex) + "k";
+            }
+            result.add(input);
         }
         return result;
         //  System.out.println("bitti");
@@ -370,9 +415,9 @@ public class Core {
                                 }
                                 if (ress.length() < correctOutput.length() || ress.equals(correctOutput)) {
                                     if (ress.equals(correctOutput)) {
-                                        if (wd.getEkler().size() * 2 <= correctOutput.length()) {
-                                            temp.add(wd);
-                                        }
+                                        // if (wd.getEkler().size() * 2 <= correctOutput.length()) {
+                                        temp.add(wd);
+                                        //    }
                                     } else {
                                         temp.add(wd);
                                     }

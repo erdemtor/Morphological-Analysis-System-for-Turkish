@@ -13,6 +13,10 @@ ayım * fiil
 da * isim
 dan * isim
 de * isim
+deki * isim
+daki * isim
+teki * isim
+taki * isim
 den * isim
 dı * isim sıfat fiil
 dığ * fiil
@@ -47,7 +51,7 @@ esin * fiil
 esiniz * fiil
 eyim * fiil
 ı * isim
-ım * isim sıfat
+ım * fiil isim sıfat
 ımız * isim
 ın * fiil isim
 ınca * fiil
@@ -55,9 +59,9 @@ eyim * fiil
 ıp * fiil
 ır * fiil
 ıyor * fiil
-ız * isim sıfat
+ız * fiil isim sıfat
 i * isim
-im * isim sıfat
+im * fiil isim sıfat
 imiz * isim
 in * isim fiil
 ince * fiil
@@ -65,7 +69,7 @@ iniz * isim fiil
 ip * fiil
 ir * fiil
 iyor * fiil
-iz * isim sıfat
+iz * fiil isim sıfat
 k * fiil
 ken * isim sıfat
 la * isim sıfat
@@ -115,21 +119,21 @@ r * fiil
 sa * sıfat fiil
 se * sıfat fiil
 sı * isim
-sın * isim
+sın * fiil isim
 sınız * sıfat isim
 sınlar * fiil
-si * fiil
+si * fiil isim
 sin * fiil isim sıfat
 siniz * isim sıfat fiil
 sinler * fiil
 su * isim
 sun * fiil sıfat isim
 sunlar * fiil
-sunuz * isim sıfat
+sunuz * fiil isim sıfat
 sü * isim
 sün * isim sıfat fiil
 sünler * fiil
-sünüz * isim sıfat
+sünüz * fiil isim sıfat
 ta * isim
 tan * isim
 te * isim
@@ -155,7 +159,7 @@ tük * fiil
 tükçe * fiil
 tür * sıfat isim
 u * isim
-um * isim sıfat
+um * fiil isim sıfat
 umuz * isim
 un * isim fiil
 unca * fiil
@@ -163,9 +167,9 @@ unuz * isim fiil
 up * fiil
 ur * fiil
 uyor * fiil
-uz * isim sıfat
+uz * fiil isim sıfat
 ü * isim
-üm * isim sıfat
+üm * fiil isim sıfat
 ümüz * isim
 ün * isim fiil
 ünce * fiil
@@ -173,7 +177,7 @@ uz * isim sıfat
 üp * fiil
 ür * fiil
 üyor * fiil
-üz * isim sıfat
+üz * fiil isim sıfat
 ya * isim
 yabil * fiil
 yacağ * fiil
