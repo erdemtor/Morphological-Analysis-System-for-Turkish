@@ -17,6 +17,7 @@ public class Core {
     public static ArrayList<String> cekimEkleriStr = new ArrayList<>();
     public static ArrayList<String> yapimEkleriStr = new ArrayList<>();
     public static HashMap<Integer, String> alphabet;
+    public static HashMap<Double, Double> lengthProbabilities;
 
     public static void main(String[] args) throws IOException {
         yapımEkleri = new ArrayList<>();
@@ -24,11 +25,14 @@ public class Core {
         turkish = new HashSet<>();
         turkishRoots = new HashSet<>();
         alphabet = new HashMap<>();
+        lengthProbabilities = new HashMap<>();
         createAlphabet();
         readTurkish("D:\\NLP\\Sozluk");
         readSuffixes("yapımekleri.txt", "çekimekleri.txt", "TurkishRoots.txt");
-        //  readMetuBankAndProcess("turkish_metu_sabanci_train.conll");
-        Scanner scan = new Scanner(System.in);
+        readMetuBankAndProcess("turkish_metu_sabanci_train.conll", true);
+        readMetuBankAndProcess("turkish_metu_sabanci_train.conll", false);
+        /*
+        *   Scanner scan = new Scanner(System.in);
         String input = "";
         int cnt = 0;
         int win = 0;
@@ -37,7 +41,7 @@ public class Core {
         while ((input = read.readLine()) != null) {
             boolean seks = false;
             String[] temp = input.split("\t");
-            if (temp[0].length() < 15){
+            if (temp[0].length() < 15) {
                 ArrayList<String> x = testWords(temp[0], true);
                 cnt++;
                 if (x.contains(temp[1])) {
@@ -52,9 +56,9 @@ public class Core {
             }
 
 
-
         }
 
+        * */
     }
 
     public static boolean isDouble(String str) {
@@ -89,7 +93,7 @@ public class Core {
         return stringBuilder.toString();
     }
 
-    private static void readMetuBankAndProcess(String filepath) throws IOException {
+    private static void readMetuBankAndProcess(String filepath, boolean calculateRates) throws IOException {
         BufferedReader read;
         String str;
         InputStream bytes = new FileInputStream(filepath);
@@ -97,24 +101,63 @@ public class Core {
         read = new BufferedReader(chars);
         int cnt = 0;
         int correct = 0;
+        TreeMap<Double, Integer> rates = new TreeMap<>();
         while ((str = read.readLine()) != null) {
             if (str.contains("\t")) {
                 String[] tokens = str.split("\t");
-                if (tokens.length > 2 && !tokens[1].contains("_") && !tokens[2].contains("_") && !tokens[3].toLowerCase().equals("punc") && tokens[1].length() < 13) {
-                    cnt++;
-                    System.out.print("Results for " + tokens[1].toLowerCase() + " (" + tokens[2] + ") : ");
-                    ArrayList<String> predictedRoots = testWords(tokenizeString(tokens[1]), false);
-                    if (predictedRoots.get(predictedRoots.size() - 1).equals(tokens[2])) {
-                        correct++;
+
+                if (tokens.length > 2 && !tokens[1].contains("_") && !tokens[2].contains("_") && !tokens[3].toLowerCase().equals("punc") && tokens[1].length() < 15) {
+                    String word = tokens[1];
+                    String root = tokens[2];
+
+
+                    if (!calculateRates) {
+                        cnt++;
+                        System.out.print("Results for " + tokens[1].toLowerCase() + " (" + tokens[2] + ") : ");
+                        ArrayList<String> predictedRoots = testWords(tokenizeString(tokens[1].toLowerCase()), true);
+                        if (predictedRoots.size() > 0) {
+                            double maxProb = -1;
+                            String predictedRoot = predictedRoots.get(0);
+                            for (String res : predictedRoots) {
+                                double ratio = (double) word.length() / (double) res.length();
+                                ratio = (double) Math.round(ratio * 10) / 10.0;
+                                if (lengthProbabilities.containsKey(ratio)) {
+                                    double prob = lengthProbabilities.get(ratio);
+                                    if (maxProb < prob) {
+                                        predictedRoot = res;
+                                        maxProb = prob;
+                                    }
+                                }
+                            }
+                            if (predictedRoot.toLowerCase().equals(root.toLowerCase())) {
+                                correct++;
+                            }
+                        }
+                        System.out.println(predictedRoots.toString() + " " + correct + "/" + cnt);
+                    } else {
+                        double ratio = (double) word.length() / (double) root.length();
+                        ratio = (double) Math.round(ratio * 10) / 10.0;
+                        if (rates.containsKey(ratio)) {
+                            rates.put(ratio, rates.get(ratio) + 1);
+                        } else {
+                            rates.put(ratio, 1);
+                        }
                     }
-                    if (cnt == 5000) {
-                        System.out.println("as");
-                    }
-                    System.out.println(predictedRoots.toString() + " " + correct + "/" + cnt);
+
                 }
             }
         }
-        System.out.println(correct + "/" + cnt + " = " + 100 * correct / cnt + "%");
+
+        if (calculateRates) {
+            for (double ratio : rates.keySet()) {
+                int score = rates.get(ratio);
+                lengthProbabilities.put(ratio, (double) score / 29081.0);
+            }
+        }
+        else {
+            System.out.println(correct + "/" + cnt + " = " + 100 * correct / cnt + "%");
+        }
+
     }
 
     public static void createAlphabet() {
@@ -218,6 +261,10 @@ public class Core {
 
         ArrayList<String> result = new ArrayList<>();
         boolean isAnyCekimEkiCombinationFound = false;
+        if (turkish.contains(new Word(input, ""))) {
+            result.add(input);
+        }
+
         for (int i = 1; i < input.length(); i++) {
             if (turkish.contains(new Word(input.substring(0, i), ""))) {
                 int lastindex = input.length();
