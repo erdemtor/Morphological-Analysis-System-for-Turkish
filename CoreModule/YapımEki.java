@@ -55,6 +55,11 @@ public class YapımEki extends Ek {
     }
 
     @Override
+    /**
+     * If the content of two instance is the same, they are the same.
+     * If not, checks their hashCode.
+     * returns true if their hashCode are the same.
+     */
     public boolean equals(Object y) {
         boolean sameSame = false;
         if (y != null && y instanceof  YapımEki ) {

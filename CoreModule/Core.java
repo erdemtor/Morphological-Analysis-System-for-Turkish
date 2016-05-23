@@ -61,6 +61,11 @@ public class Core {
         * */
     }
 
+    /**
+     * Tests whether given string can be casted into Double.
+     * @param str String to be tested
+     * @return true if the string is castable to Double, false otherwise.
+     */
     public static boolean isDouble(String str) {
         try {
             Double.parseDouble(str);
@@ -70,6 +75,14 @@ public class Core {
         return false;
     }
 
+    /**
+     * takes the input, makes all lowercased.
+     * gets rid of the words containing all nonword characters.
+     * gets rid of the nonword characters at the beginning of a word.
+     * gets rid of the nonword characters at the end of a word.
+     * gets rid of any nonword character in a word (excluding digits) // 19.2 or 16,3 will pass, whereas "It's okay" will be "its okay"
+     *
+     */
     private static String tokenizeString(String potentialToken) {
         StringBuilder stringBuilder = new StringBuilder();
         if (potentialToken.length() > 0) { // parseDouble thinks "1980." a double. avoid that.
@@ -93,6 +106,18 @@ public class Core {
         return stringBuilder.toString();
     }
 
+    /**
+     * Reads the MetuBank dataset and either tests the Stemmer module or calculates word length probablities depending on calculateRates parameter.
+     *
+     * To calculate the rates reads every word and their annotated stem. Compares their length and increases the number of times we see this word length-stem length ratio.
+     * After calculating the counts, normalizes each value for word length-stem length ratio by t he number of elements we saw in total to calculate the probability of
+     * seeing a stem of length x after a word of length y.
+     *
+     * If the calculateRates parameter is set to false, the code will read the MetuBank and test our Stemmer for every annotated word-stem tuple. Calculates accuracy for the whole data.
+     * @param filepath /path/to/metubank_train.conll
+     * @param calculateRates true means only calculate the wordlength-stemlength probabilities, false means test our Stemmer.
+     * @throws IOException
+     */
     private static void readMetuBankAndProcess(String filepath, boolean calculateRates) throws IOException {
         BufferedReader read;
         String str;
@@ -160,6 +185,9 @@ public class Core {
 
     }
 
+    /**
+     * This function indexes the Turkish Alphabet and assigns an index to each letter.
+     */
     public static void createAlphabet() {
         alphabet.put(0, "a");
         alphabet.put(1, "b");
@@ -191,6 +219,12 @@ public class Core {
         alphabet.put(27, "z");
     }
 
+    /** reads and parses TDK Dictionary into the memory.
+     *
+     * Each word in the TDK dictionary, apart from the ones that do not have a proper lexical class,
+     * will be created as an instance of Word class and will be put in turkish ArrayList.
+     *
+     */
     public static void readTurkish(String filepath) throws IOException {
         BufferedReader read;
         String str;
@@ -255,10 +289,6 @@ public class Core {
     }
 
     private static ArrayList<String> testWords(String input, boolean onlycekim) {
-        if (input.equals("açıkladım")) {
-            System.out.println();
-        }
-
         ArrayList<String> result = new ArrayList<>();
         boolean isAnyCekimEkiCombinationFound = false;
         if (turkish.contains(new Word(input, ""))) {
@@ -373,6 +403,11 @@ public class Core {
         return filtered;
     }
 
+    /**
+     * Returns the instance of Word from the turkish list w.r.t. given String
+     * @param content content of the wanted Word
+     * @return an instance of Word if found, null otherwise.
+     */
     public static Word getWord(String content) {
         for (Word w : turkish) {
             if (w.getContent().equals(content))
@@ -382,6 +417,11 @@ public class Core {
         return null;
     }
 
+    /**
+     * Returns all the instances of Ek w.r.t. given String, considers only the derivational suffixes.
+     * @param content content of the wanted Ek
+     * @return a list of Eks
+     */
     public static ArrayList<Ek> getYapımEkleri(String content) {
         ArrayList<Ek> result = new ArrayList<>();
         for (YapımEki ek :
@@ -394,6 +434,11 @@ public class Core {
         return result;
     }
 
+    /**
+     * Returns all the instances of Ek w.r.t. given String, considers only the inflectional suffixes.
+     * @param content content of the wanted Ek
+     * @return a list of Eks
+     */
     public static ArrayList<Ek> getCekimEkleri(String content) {
         ArrayList<Ek> result = new ArrayList<>();
         for (CekimEki ek :
@@ -528,6 +573,13 @@ public class Core {
         return null;
     }
 
+    /**
+     * Reads the inflectional and derivational suffixes, as well as TurkishRoots from the local drive.
+     * @param filepath1 /path/to/yapımekleri.txt
+     * @param filepath2 /path/to/cekimekleri.txt
+     * @param filepath3/path/to/TurkishRoots.txt
+     * @throws IOException
+     */
     private static void readSuffixes(String filepath1, String filepath2, String filepath3) throws IOException {
         BufferedReader read = new BufferedReader(new FileReader(new File(filepath1)));
         String str;

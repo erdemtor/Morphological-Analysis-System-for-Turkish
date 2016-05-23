@@ -32,6 +32,9 @@ public class Word   {
     }
 
     @Override
+    /**
+     * If the content of two instance is the same, they are the same.
+     */
     public boolean equals(Object w) {
         boolean sameSame = false;
 

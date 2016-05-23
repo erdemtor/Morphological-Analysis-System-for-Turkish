@@ -18,10 +18,11 @@ public class TurkishRenderer {
         renderedTurkish = new TreeSet<>();
         yapımEkleri = new ArrayList<>();
         cekimEkleri = new ArrayList<>();
-        turkish = new ArrayList<Word>();
-        fix = new HashMap<Character, Character>();
-        alphabet = new HashMap<Integer, String>();
+        turkish = new ArrayList<>();
+        fix = new HashMap<>();
+        alphabet = new HashMap<>();
         createAlphabet();
+        // fix weird characters
         fix.put('þ', 'ş');
         fix.put('ð', 'ğ');
         fix.put('ý', 'ı');
@@ -30,8 +31,7 @@ public class TurkishRenderer {
         String str;
         while ((str = read.readLine()) != null) {
             if (turkish.contains(new Word(str, ""))) {
-                for (Word w :
-                        turkish) {
+                for (Word w : turkish) {
                     if (w.getContent().equals(str)) {
                         System.out.println(w.getContent() + " " + w.getType());
                     }
@@ -44,6 +44,9 @@ public class TurkishRenderer {
     }
 
     @SuppressWarnings("Duplicates")
+    /**
+     * This function indexes the Turkish Alphabet and assigns an index to each letter.
+     */
     public static void createAlphabet() {
         alphabet.put(0, "a");
         alphabet.put(1, "b");
@@ -75,13 +78,28 @@ public class TurkishRenderer {
         alphabet.put(27, "z");
     }
 
-
+    /**
+     * Adds the given word to the renderedTurkish list
+     *
+     * @param word
+     */
     public static void addRenderedTurkish(String word) {
         if (!renderedTurkish.contains(word)) {
             renderedTurkish.add(word);
         }
     }
 
+    /**
+     * Iterates through the already read Turkish TDK and generates the roots for each word.
+     *
+     * For each word, iterates through each letter of that word. If the substring up to that point exists in the TDK Dictionary,
+     * tries to generate a list of suffixes from the remaining part of the current word. Since Turkish is an agglutinative, this process is applicable to all words.
+     * if the isEklerProducable method doesn't return null, which means there's a candidate list of suffixes, adds the root to the renderedTurkish list.
+     * At the end of the iteration, if there's no list of suffixes found at all, the whole word is marked as a root and added to the renderedTurkish list.
+     *
+     * @throws FileNotFoundException
+     * @throws UnsupportedEncodingException
+     */
     public static void renderTurkish() throws FileNotFoundException, UnsupportedEncodingException {
 
         boolean isFound;
@@ -119,6 +137,17 @@ public class TurkishRenderer {
         }
     }
 
+    /**
+     * Recursively checks whether a list of suffixes can be generated from given parameters.
+     *
+     * Base case is ekler parameter is already in our derivational suffixes list. If so, returns a new FullWord with the root of w.getContent() and suffixes of ekler.
+     * If the base case is not met, it will iterate through the possible suffixes list and call itself two times, seperating the possible suffix list in the current index.
+     * If the left side and right side of the suffix list is producable, then returns a FullWord that has the root of w.getContent() and a suffix list of all the suffixes
+     * returned by the function in the previous call.
+     * @param ekler possible list of suffixes
+     * @param w contains the root
+     * @return FullWord
+     */
     public static FullWord isEklerProducable(String ekler, Word w) {
         if (yapımEkleri.contains(new YapimEki(ekler, "", ""))) {
             ArrayList<String> eklerForWord = new ArrayList<>();
@@ -141,13 +170,17 @@ public class TurkishRenderer {
 
 
     @SuppressWarnings("Duplicates")
+    /** reads and parses TDK Dictionary. Also reads derivational and inflectional suffix lists into the memory.
+     *
+     * Each word in the TDK dictionary, apart from the ones that do not have a proper lexical class,
+     * will be created as an instance of Word class and will be put in turkish ArrayList.
+     *
+     */
     public static void readArticles(String filepath1, String filepath2, String filepath3) throws IOException {
         BufferedReader read = new BufferedReader(new FileReader(new File(filepath1)));
         String str;
-        int count = 0;
-        int type = 0;
+
         while ((str = read.readLine()) != null) {
-            //  String temp = tokenize(str.trim());
             String[] temp2 = str.split(" \\* ");
             String[] ekler = temp2[0].trim().split(" ");
             String[] actions = temp2[1].trim().split(" ");
@@ -158,7 +191,6 @@ public class TurkishRenderer {
                 ek.setEk(ekler[i]);
                 yapımEkleri.add(ek);
             }
-            type++;
         }
         read.close();
         for (int i = 0; i < 28; i++) { //for each of the files
@@ -226,6 +258,14 @@ public class TurkishRenderer {
         read.close();
     }
 
+    /**
+     * takes the input, makes all lowercased.
+     * gets rid of the words containing all nonword characters.
+     * gets rid of the nonword characters at the beginning of a word.
+     * gets rid of the nonword characters at the end of a word.
+     * gets rid of any nonword character in a word (excluding digits) // 19.2 or 16,3 will pass, whereas "It's okay" will be "its okay"
+     *
+     */
     public static String tokenize(String line) {
         String[] prettyTokens = line.toLowerCase().split(" "); // split the lowercase string by whitespace
         StringBuilder bigBuilder = new StringBuilder();

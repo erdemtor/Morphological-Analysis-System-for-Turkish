@@ -53,6 +53,9 @@ public class YapimEki {
 
 
     @Override
+    /**
+     * If the content of two instance is the same, they are the same derivational suffix
+     */
     public boolean equals(Object y) {
         boolean sameSame = false;
         if (y != null && y instanceof  YapimEki ) {

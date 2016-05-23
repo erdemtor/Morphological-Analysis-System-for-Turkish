@@ -54,6 +54,11 @@ public class Main {
 
         return dp[len1][len2];
     }
+
+    /**
+     * Reads the contents of turkish words database.txt and fills the turkissh hasmap according to words' frequencies.
+     * @throws FileNotFoundException
+     */
     public static void readFromFile() throws FileNotFoundException {
         Scanner scanner = new Scanner(new File("turkish words database.txt"));
         Scanner s = new Scanner(System.in);
