@@ -1,5 +1,4 @@
 import TurkishDictParser.Word;
-import sun.reflect.generics.tree.Tree;
 
 
 import java.io.*;
@@ -24,37 +23,42 @@ public class Core {
     }
 
     public static String interactUser(String input, boolean isEditdistance, boolean stemmer) {
-            String outputString = "";
-            String word = input;
-            if(isEditdistance){
-               word = Main.correctMisspelling(input);
-                if (!word.equals(input)) {
-                    outputString += (input +" is corrected as: "+ word +"\n");
+        String outputString = "";
+        String word = input;
+        if (isEditdistance) {
+            word = Main.correctMisspelling(input);
+            if (!word.equals(input)) {
+                outputString += (input + " is corrected as: " + word + "\n");
+            }
+        }
+
+        List<String> predictedRoots = testWords(word, stemmer);
+        String predictedRoot = predictedRoots.get(0);
+        double maxProb = -1;
+        for (String res : predictedRoots) {
+            double ratio = (double) word.length() / (double) res.length();
+            ratio = (double) Math.round(ratio * 10) / 10.0;
+            if (lengthProbabilities.containsKey(ratio)) {
+                double prob = lengthProbabilities.get(ratio);
+                if (maxProb < prob) {
+                    predictedRoot = res;
+                    maxProb = prob;
                 }
             }
-
-            List<String> predictedRoots = testWords(word, stemmer);
-            String predictedRoot = predictedRoots.get(0);
-            double maxProb = -1;
-            for (String res : predictedRoots) {
-                double ratio = (double) word.length() / (double) res.length();
-                ratio = (double) Math.round(ratio * 10) / 10.0;
-                if (lengthProbabilities.containsKey(ratio)) {
-                    double prob = lengthProbabilities.get(ratio);
-                    if (maxProb < prob) {
-                        predictedRoot = res;
-                        maxProb = prob;
-                    }
-                }
         }
         if (!stemmer) {
-            outputString +=  ("\tThe system found the following possible morphological parsing: \n");
-            outputString += ("\t=================================================="+"\n");
-        }
-        else{
-            outputString += ("\tThe system found the followings as possible stems: " + predictedRoots.toString()+"\n");
-            outputString += ("\tAmong those the most possible stem is: " + predictedRoot+"\n");
-            outputString += ("\t=================================================="+"\n");
+            outputString += ("\tThe system found the following possible morphological parsing: \n");
+            for (String root : predictedRoots) {
+                List<WordDetail> possibleMorphs = morphologycallyAnalyze(root, input.substring(root.length()));
+                for (WordDetail wd: possibleMorphs) {
+                    outputString +="\t\t" +  wd.toString() + "\n";
+                }
+            }
+            outputString += ("\t==================================================" + "\n");
+        } else {
+            outputString += ("\tThe system found the followings as possible stems: " + predictedRoots.toString() + "\n");
+            outputString += ("\tAmong those the most possible stem is: " + predictedRoot + "\n");
+            outputString += ("\t==================================================" + "\n");
         }
         return outputString;
 
@@ -77,6 +81,7 @@ public class Core {
 
     /**
      * Tests whether given string can be casted into Double.
+     *
      * @param str String to be tested
      * @return true if the string is castable to Double, false otherwise.
      */
@@ -95,7 +100,6 @@ public class Core {
      * gets rid of the nonword characters at the beginning of a word.
      * gets rid of the nonword characters at the end of a word.
      * gets rid of any nonword character in a word (excluding digits) // 19.2 or 16,3 will pass, whereas "It's okay" will be "its okay"
-     *
      */
     private static String tokenizeString(String potentialToken) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -122,11 +126,11 @@ public class Core {
 
     /**
      * Reads the MetuBank dataset and either tests the Stemmer module or calculates word length probablities depending on calculateRates parameter.
-     *
+     * <p>
      * To calculate the rates reads every word and their annotated stem. Compares their length and increases the number of times we see this word length-stem length ratio.
      * After calculating the counts, normalizes each value for word length-stem length ratio by t he number of elements we saw in total to calculate the probability of
      * seeing a stem of length x after a word of length y.
-     *
+     * <p>
      * If the calculateRates parameter is set to false, the code will read the MetuBank and test our Stemmer for every annotated word-stem tuple. Calculates accuracy for the whole data.
      *
      * @param filepath       /path/to/metubank_train.conll
@@ -193,8 +197,7 @@ public class Core {
                 int score = rates.get(ratio);
                 lengthProbabilities.put(ratio, (double) score / 29081.0);
             }
-        }
-        else {
+        } else {
             System.out.println(correct + "/" + cnt + " = " + 100 * correct / cnt + "%");
         }
 
@@ -234,11 +237,52 @@ public class Core {
         alphabet.put(27, "z");
     }
 
-    /** reads and parses TDK Dictionary into the memory.
-     *
+
+    public static List<WordDetail> morphologycallyAnalyze(String root, String ekler) {
+        List<WordDetail> results = new ArrayList<>();
+        Integer length = ekler.length();
+        for (int i = 1; i < length; i++) {
+            String candidateYapımEkleri = ekler.substring(0, i);
+            ArrayList<String> answer = allProducable(candidateYapımEkleri, yapimEkleriStr);
+            ArrayList<WordDetail> filtered = new ArrayList<>();
+            if (answer != null) {
+                ArrayList<WordDetail> wds = markSuffixes(answer, root, true, false);
+                filtered = filter(wds, true, "");
+                if (filtered.size() > 0) {
+                    String candidateCekimEkleri = ekler.substring(i);
+                    answer = allProducable(candidateCekimEkleri, cekimEkleriStr);
+                    if (answer != null) {
+                        Word wordRoot = getWord(root);
+                        String type = wordRoot.getType();
+                        for (WordDetail filt : filtered) {
+                            type = ((YapımEki) filt.getEkler().get(filt.getEkler().size() - 1)).getTo();
+                            wds = markSuffixes(answer, root, false, true);
+                            ArrayList<WordDetail> filtered2 = filter(wds, false, type);
+                            if (filtered2.size() > 0) {
+                                for (WordDetail morpCekim : filtered2) {
+                                    WordDetail real = new WordDetail(root, null);
+                                    List<Ek> allEksBelongingReal = (List<Ek>) filt.getEkler().clone();
+                                    allEksBelongingReal.addAll(morpCekim.getEkler());
+                                    real.setEkler((ArrayList<Ek>) allEksBelongingReal);
+                                    results.add(real);
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+        return results;
+    }
+
+
+    /**
+     * reads and parses TDK Dictionary into the memory.
+     * <p>
      * Each word in the TDK dictionary, apart from the ones that do not have a proper lexical class,
      * will be created as an instance of Word class and will be put in turkish ArrayList.
-     *
      */
     public static void readTurkish(String filepath) throws IOException {
         BufferedReader read;
@@ -322,7 +366,7 @@ public class Core {
                 ArrayList<WordDetail> filtered = new ArrayList<>();
                 if (answer != null) {
                     ArrayList<WordDetail> wds = markSuffixes(answer, input.substring(0, i), false, true);
-                    filtered = filter(wds, false);
+                    filtered = filter(wds, false, "");
                 } // 1
                 if (filtered.size() != 0) {
                     if (onlycekim) {
@@ -331,16 +375,13 @@ public class Core {
                     } else {
                         checkYapimEkleri(input.substring(0, i), result);
                         isAnyCekimEkiCombinationFound = true;
-                        }
                     }
                 }
-//                System.out.println("-----" +input.substring(0, i) + "------" );
             }
-
+        }
         if (!isAnyCekimEkiCombinationFound && !onlycekim) {
             checkYapimEkleri(input, result);
         }
-
         if (result.size() < 1) {
             int lastindex = input.length();
             if (input.substring(input.length() / 2).contains("ğ")) {
@@ -364,12 +405,9 @@ public class Core {
                 ArrayList<WordDetail> filtered2 = new ArrayList<>();
                 if (answer2 != null) {
                     ArrayList<WordDetail> wds2 = markSuffixes(answer2, rootCandidateWithoutYapimEkis, true, false);
-                    filtered2 = filter(wds2, true);
+                    filtered2 = filter(wds2, true, "");
                 }
-                if (filtered2.size() == 0) {
-
-                } else {
-
+                if (filtered2.size() != 0) {
                     res.add(rootCandidateWithoutYapimEkis);
                     anyYapimEkiCombinationFound = true;
                 }
@@ -382,12 +420,15 @@ public class Core {
 
     }
 
-    public static ArrayList<WordDetail> filter(ArrayList<WordDetail> wds, boolean isYapımEki) {
+    public static ArrayList<WordDetail> filter(ArrayList<WordDetail> wds, boolean isYapımEki, String type) {
         ArrayList<WordDetail> filtered = new ArrayList<>();
         for (WordDetail wd : wds) {
             boolean isOkay = true;
             ArrayList<Ek> ekler = wd.getEkler();
             String currentState = getWord(wd.getRoot()).getType();
+            if (!type.equals("")) {
+                currentState = type;
+            }
             if (!isYapımEki && currentState.equals("sıfat")) {
                 currentState = "isim";
             }
@@ -425,6 +466,7 @@ public class Core {
 
     /**
      * Returns the instance of Word from the turkish list w.r.t. given String
+     *
      * @param content content of the wanted Word
      * @return an instance of Word if found, null otherwise.
      */
@@ -439,6 +481,7 @@ public class Core {
 
     /**
      * Returns all the instances of Ek w.r.t. given String, considers only the derivational suffixes.
+     *
      * @param content content of the wanted Ek
      * @return a list of Eks
      */
@@ -456,6 +499,7 @@ public class Core {
 
     /**
      * Returns all the instances of Ek w.r.t. given String, considers only the inflectional suffixes.
+     *
      * @param content content of the wanted Ek
      * @return a list of Eks
      */
@@ -595,8 +639,9 @@ public class Core {
 
     /**
      * Reads the inflectional and derivational suffixes, as well as TurkishRoots from the local drive.
-     * @param filepath1 /path/to/yapımekleri.txt
-     * @param filepath2 /path/to/cekimekleri.txt
+     *
+     * @param filepath1                          /path/to/yapımekleri.txt
+     * @param filepath2                          /path/to/cekimekleri.txt
      * @param filepath3/path/to/TurkishRoots.txt
      * @throws IOException
      */
