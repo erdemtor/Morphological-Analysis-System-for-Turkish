@@ -42,9 +42,6 @@ public class WordDetail {
 
     @Override
     public String toString() {
-        return "WordDetail{" +
-                "root='" + root + '\'' +
-                ", ekler=" + ekler +
-                '}';
+        return " " + root + " (root) " + ekler.toString() + " ";
     }
 }

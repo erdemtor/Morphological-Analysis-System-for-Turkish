@@ -1,4 +1,5 @@
 import TurkishDictParser.Word;
+import sun.reflect.generics.tree.Tree;
 
 
 import java.io.*;
@@ -20,25 +21,19 @@ public class Core {
 
     public static void main(String[] args) throws IOException {
         train();
-        interactUser();
-
     }
 
-    private static void interactUser() {
-        Scanner console = new Scanner(System.in);
-        System.out.println("Do you want misspell corrector to work? Y/N");
-        Boolean editDistanceAllowed = console.next().equalsIgnoreCase("y");
-        System.out.println("Please write the turkish word or QUIT(q)");
-        String input = console.next();
-        while (!input.equals("q")) {
+    public static String interactUser(String input, boolean isEditdistance, boolean stemmer) {
+            String outputString = "";
             String word = input;
-            if(editDistanceAllowed){
+            if(isEditdistance){
                word = Main.correctMisspelling(input);
                 if (!word.equals(input)) {
-                    System.out.println(input +" is corrected as: "+ word);
+                    outputString += (input +" is corrected as: "+ word +"\n");
                 }
             }
-            List<String> predictedRoots = testWords(word, true);
+
+            List<String> predictedRoots = testWords(word, stemmer);
             String predictedRoot = predictedRoots.get(0);
             double maxProb = -1;
             for (String res : predictedRoots) {
@@ -51,14 +46,18 @@ public class Core {
                         maxProb = prob;
                     }
                 }
-            }
-
-            System.out.println("The system found the followings as possible stems: " + predictedRoots.toString());
-            System.out.println("Among those the most possible stem is: " + predictedRoot);
-            System.out.println("============================================================================================================");
-            System.out.println("Please write the turkish word or QUIT(q)");
-            input = console.next();
         }
+        if (!stemmer) {
+            outputString +=  ("\tThe system found the following possible morphological parsing: \n");
+            outputString += ("\t=================================================="+"\n");
+        }
+        else{
+            outputString += ("\tThe system found the followings as possible stems: " + predictedRoots.toString()+"\n");
+            outputString += ("\tAmong those the most possible stem is: " + predictedRoot+"\n");
+            outputString += ("\t=================================================="+"\n");
+        }
+        return outputString;
+
     }
 
 
@@ -307,7 +306,7 @@ public class Core {
     private static ArrayList<String> testWords(String input, boolean onlycekim) {
         ArrayList<String> result = new ArrayList<>();
         boolean isAnyCekimEkiCombinationFound = false;
-        if (turkish.contains(new Word(input, ""))) {
+        if (turkish.contains(new Word(input, "")) && onlycekim) {
             result.add(input);
         }
 
@@ -328,14 +327,16 @@ public class Core {
                 if (filtered.size() != 0) {
                     if (onlycekim) {
                         result.add(input.substring(0, i));
+
                     } else {
                         checkYapimEkleri(input.substring(0, i), result);
                         isAnyCekimEkiCombinationFound = true;
+                        }
                     }
                 }
 //                System.out.println("-----" +input.substring(0, i) + "------" );
             }
-        }
+
         if (!isAnyCekimEkiCombinationFound && !onlycekim) {
             checkYapimEkleri(input, result);
         }
@@ -368,20 +369,23 @@ public class Core {
                 if (filtered2.size() == 0) {
 
                 } else {
+
                     res.add(rootCandidateWithoutYapimEkis);
                     anyYapimEkiCombinationFound = true;
                 }
             }
         }
         if (!anyYapimEkiCombinationFound) {
+
             res.add(rootWithYapimEkleri);
         }
+
     }
 
     public static ArrayList<WordDetail> filter(ArrayList<WordDetail> wds, boolean isYapımEki) {
         ArrayList<WordDetail> filtered = new ArrayList<>();
         for (WordDetail wd : wds) {
-            Boolean isOkay = true;
+            boolean isOkay = true;
             ArrayList<Ek> ekler = wd.getEkler();
             String currentState = getWord(wd.getRoot()).getType();
             if (!isYapımEki && currentState.equals("sıfat")) {

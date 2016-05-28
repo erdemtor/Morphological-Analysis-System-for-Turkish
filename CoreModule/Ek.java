@@ -14,10 +14,7 @@ public class Ek {
 
     @Override
     public String toString() {
-        return "Ek{" +
-                "ek='" + ek + '\'' +
-                ", type='" + type + '\'' +
-                '}';
+        return " " + ek + " (" + type + ") ";
     }
 
     public String getEk() {
