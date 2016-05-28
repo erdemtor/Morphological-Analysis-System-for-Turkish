@@ -1,8 +1,5 @@
 import TurkishDictParser.Word;
-import TurkishDictParser.YapimEki;
-import com.sun.org.apache.xpath.internal.SourceTree;
-import com.sun.xml.internal.bind.v2.util.EditDistance;
-import sun.reflect.generics.tree.Tree;
+
 
 import java.io.*;
 import java.util.*;
@@ -75,14 +72,12 @@ public class Core {
         createAlphabet();
         readTurkish("Sozluk");
         readSuffixes("yapımekleri.txt", "çekimekleri.txt", "TurkishRoots.txt");
-        readMetuBankAndProcess("metu_sabanci_treebank\\train\\turkish_metu_sabanci_train.conll", true);
+        readMetuBankAndProcess("turkish_metu_sabanci_train.conll", true);
         Main.readFromFile();
     }
 
-
     /**
      * Tests whether given string can be casted into Double.
-     *
      * @param str String to be tested
      * @return true if the string is castable to Double, false otherwise.
      */
@@ -101,6 +96,7 @@ public class Core {
      * gets rid of the nonword characters at the beginning of a word.
      * gets rid of the nonword characters at the end of a word.
      * gets rid of any nonword character in a word (excluding digits) // 19.2 or 16,3 will pass, whereas "It's okay" will be "its okay"
+     *
      */
     private static String tokenizeString(String potentialToken) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -127,11 +123,11 @@ public class Core {
 
     /**
      * Reads the MetuBank dataset and either tests the Stemmer module or calculates word length probablities depending on calculateRates parameter.
-     * <p>
+     *
      * To calculate the rates reads every word and their annotated stem. Compares their length and increases the number of times we see this word length-stem length ratio.
      * After calculating the counts, normalizes each value for word length-stem length ratio by t he number of elements we saw in total to calculate the probability of
      * seeing a stem of length x after a word of length y.
-     * <p>
+     *
      * If the calculateRates parameter is set to false, the code will read the MetuBank and test our Stemmer for every annotated word-stem tuple. Calculates accuracy for the whole data.
      *
      * @param filepath       /path/to/metubank_train.conll
@@ -141,7 +137,7 @@ public class Core {
     private static void readMetuBankAndProcess(String filepath, boolean calculateRates) throws IOException {
         BufferedReader read;
         String str;
-        InputStream bytes = new FileInputStream(filepath);
+        InputStream bytes = Core.class.getClassLoader().getResourceAsStream(filepath);
         Reader chars = new InputStreamReader(bytes);
         read = new BufferedReader(chars);
         int cnt = 0;
@@ -198,7 +194,8 @@ public class Core {
                 int score = rates.get(ratio);
                 lengthProbabilities.put(ratio, (double) score / 29081.0);
             }
-        } else {
+        }
+        else {
             System.out.println(correct + "/" + cnt + " = " + 100 * correct / cnt + "%");
         }
 
@@ -238,20 +235,20 @@ public class Core {
         alphabet.put(27, "z");
     }
 
-    /**
-     * reads and parses TDK Dictionary into the memory.
-     * <p>
+    /** reads and parses TDK Dictionary into the memory.
+     *
      * Each word in the TDK dictionary, apart from the ones that do not have a proper lexical class,
      * will be created as an instance of Word class and will be put in turkish ArrayList.
+     *
      */
     public static void readTurkish(String filepath) throws IOException {
         BufferedReader read;
         String str;
         for (int i = 0; i < 28; i++) { //for each of the files
             String currentFileName = filepath + "\\" + alphabet.get(i) + "\\";
-            currentFileName += "HARF_" + alphabet.get(i) + ".xml";
+            currentFileName = "HARF_" + alphabet.get(i) + ".xml";
 
-            InputStream bytes = new FileInputStream(currentFileName);
+            InputStream bytes = Core.class.getClassLoader().getResourceAsStream(currentFileName);
             Reader chars = new InputStreamReader(bytes);
             read = new BufferedReader(chars);
             while ((str = read.readLine()) != null) {
@@ -424,7 +421,6 @@ public class Core {
 
     /**
      * Returns the instance of Word from the turkish list w.r.t. given String
-     *
      * @param content content of the wanted Word
      * @return an instance of Word if found, null otherwise.
      */
@@ -439,7 +435,6 @@ public class Core {
 
     /**
      * Returns all the instances of Ek w.r.t. given String, considers only the derivational suffixes.
-     *
      * @param content content of the wanted Ek
      * @return a list of Eks
      */
@@ -457,7 +452,6 @@ public class Core {
 
     /**
      * Returns all the instances of Ek w.r.t. given String, considers only the inflectional suffixes.
-     *
      * @param content content of the wanted Ek
      * @return a list of Eks
      */
@@ -597,14 +591,15 @@ public class Core {
 
     /**
      * Reads the inflectional and derivational suffixes, as well as TurkishRoots from the local drive.
-     *
-     * @param filepath1                          /path/to/yapımekleri.txt
-     * @param filepath2                          /path/to/cekimekleri.txt
+     * @param filepath1 /path/to/yapımekleri.txt
+     * @param filepath2 /path/to/cekimekleri.txt
      * @param filepath3/path/to/TurkishRoots.txt
      * @throws IOException
      */
     private static void readSuffixes(String filepath1, String filepath2, String filepath3) throws IOException {
-        BufferedReader read = new BufferedReader(new FileReader(new File(filepath1)));
+        InputStream is = Core.class.getClassLoader().getResourceAsStream(filepath1);
+        InputStreamReader read2 = new InputStreamReader(is);
+        BufferedReader read = new BufferedReader(read2);
         String str;
         while ((str = read.readLine()) != null) {
             String[] temp2 = str.split(" \\* ");
@@ -620,7 +615,9 @@ public class Core {
             }
         }
         read.close();
-        read = new BufferedReader(new FileReader(new File(filepath2)));
+        is = Core.class.getClassLoader().getResourceAsStream(filepath2);
+        read2 = new InputStreamReader(is);
+        read = new BufferedReader(read2);
         while ((str = read.readLine()) != null) {
             String[] temp2 = str.split(" \\* ");
             String ek = temp2[0].trim();
@@ -632,7 +629,9 @@ public class Core {
             }
         }
         read.close();
-        read = new BufferedReader(new FileReader(new File(filepath3)));
+        is = Core.class.getClassLoader().getResourceAsStream(filepath3);
+        read2 = new InputStreamReader(is);
+        read = new BufferedReader(read2);
         while ((str = read.readLine()) != null) {
             String[] temp2 = str.split(" ");
             String kök = temp2[0].trim();

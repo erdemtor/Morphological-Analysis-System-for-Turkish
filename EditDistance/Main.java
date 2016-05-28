@@ -1,6 +1,5 @@
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -57,16 +56,17 @@ public class Main {
      * Reads the contents of turkish words database.txt and fills the turkissh hasmap according to words' frequencies.
      * @throws FileNotFoundException
      */
-    public static void readFromFile() throws FileNotFoundException {
-        Scanner scanner = new Scanner(new File("turkish words database.txt"));
-        Scanner s = new Scanner(System.in);
+    public static void readFromFile() throws IOException {
+        InputStream is = Core.class.getClassLoader().getResourceAsStream("turkish words database.txt");
+        InputStreamReader read2 = new InputStreamReader(is);
+        BufferedReader read = new BufferedReader(read2);
 
         for (int i = 0; i < 40 ; i++) {
             turkissh.add(new HashMap<>());
         }
-        while (scanner.hasNextLine()){
-            String word = scanner.nextLine();
-            String[] wordAndFreq = word.split(" ");
+        String str;
+        while ((str = read.readLine()) != null) {
+            String[] wordAndFreq = str.split(" ");
             if(wordAndFreq[0].length()>2)
                 turkissh.get(wordAndFreq[0].length() - 2).put(wordAndFreq[0],Integer.parseInt(wordAndFreq[1]));
         }
