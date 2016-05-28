@@ -1,5 +1,7 @@
 import TurkishDictParser.Word;
 import TurkishDictParser.YapimEki;
+import com.sun.org.apache.xpath.internal.SourceTree;
+import com.sun.xml.internal.bind.v2.util.EditDistance;
 import sun.reflect.generics.tree.Tree;
 
 import java.io.*;
@@ -20,6 +22,50 @@ public class Core {
     public static HashMap<Double, Double> lengthProbabilities;
 
     public static void main(String[] args) throws IOException {
+        train();
+        interactUser();
+
+    }
+
+    private static void interactUser() {
+        Scanner console = new Scanner(System.in);
+        System.out.println("Do you want misspell corrector to work? Y/N");
+        Boolean editDistanceAllowed = console.next().equalsIgnoreCase("y");
+        System.out.println("Please write the turkish word or QUIT(q)");
+        String input = console.next();
+        while (!input.equals("q")) {
+            String word = input;
+            if(editDistanceAllowed){
+               word = Main.correctMisspelling(input);
+                if (!word.equals(input)) {
+                    System.out.println(input +" is corrected as: "+ word);
+                }
+            }
+            List<String> predictedRoots = testWords(word, true);
+            String predictedRoot = predictedRoots.get(0);
+            double maxProb = -1;
+            for (String res : predictedRoots) {
+                double ratio = (double) word.length() / (double) res.length();
+                ratio = (double) Math.round(ratio * 10) / 10.0;
+                if (lengthProbabilities.containsKey(ratio)) {
+                    double prob = lengthProbabilities.get(ratio);
+                    if (maxProb < prob) {
+                        predictedRoot = res;
+                        maxProb = prob;
+                    }
+                }
+            }
+
+            System.out.println("The system found the followings as possible stems: " + predictedRoots.toString());
+            System.out.println("Among those the most possible stem is: " + predictedRoot);
+            System.out.println("============================================================================================================");
+            System.out.println("Please write the turkish word or QUIT(q)");
+            input = console.next();
+        }
+    }
+
+
+    public static void train() throws IOException {
         yapımEkleri = new ArrayList<>();
         cekimEkleri = new ArrayList<>();
         turkish = new HashSet<>();
@@ -27,42 +73,16 @@ public class Core {
         alphabet = new HashMap<>();
         lengthProbabilities = new HashMap<>();
         createAlphabet();
-        readTurkish("D:\\NLP\\Sozluk");
+        readTurkish("Sozluk");
         readSuffixes("yapımekleri.txt", "çekimekleri.txt", "TurkishRoots.txt");
-        readMetuBankAndProcess("turkish_metu_sabanci_train.conll", true);
-        readMetuBankAndProcess("turkish_metu_sabanci_train.conll", false);
-        /*
-        *   Scanner scan = new Scanner(System.in);
-        String input = "";
-        int cnt = 0;
-        int win = 0;
-        BufferedReader read = new BufferedReader(new FileReader(new File("stemmed")));
-
-        while ((input = read.readLine()) != null) {
-            boolean seks = false;
-            String[] temp = input.split("\t");
-            if (temp[0].length() < 15) {
-                ArrayList<String> x = testWords(temp[0], true);
-                cnt++;
-                if (x.contains(temp[1])) {
-                    win++;
-                    seks = true;
-                }
-                if (!seks) {
-                    System.out.print(temp[0] + ":     ");
-                    System.out.print(x.toString() + "\t\t");
-                    System.out.println(win + "/" + cnt + " = " + ((double) win / (double) cnt));
-                }
-            }
-
-
-        }
-
-        * */
+        readMetuBankAndProcess("metu_sabanci_treebank\\train\\turkish_metu_sabanci_train.conll", true);
+        Main.readFromFile();
     }
+
 
     /**
      * Tests whether given string can be casted into Double.
+     *
      * @param str String to be tested
      * @return true if the string is castable to Double, false otherwise.
      */
@@ -81,7 +101,6 @@ public class Core {
      * gets rid of the nonword characters at the beginning of a word.
      * gets rid of the nonword characters at the end of a word.
      * gets rid of any nonword character in a word (excluding digits) // 19.2 or 16,3 will pass, whereas "It's okay" will be "its okay"
-     *
      */
     private static String tokenizeString(String potentialToken) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -108,13 +127,14 @@ public class Core {
 
     /**
      * Reads the MetuBank dataset and either tests the Stemmer module or calculates word length probablities depending on calculateRates parameter.
-     *
+     * <p>
      * To calculate the rates reads every word and their annotated stem. Compares their length and increases the number of times we see this word length-stem length ratio.
      * After calculating the counts, normalizes each value for word length-stem length ratio by t he number of elements we saw in total to calculate the probability of
      * seeing a stem of length x after a word of length y.
-     *
+     * <p>
      * If the calculateRates parameter is set to false, the code will read the MetuBank and test our Stemmer for every annotated word-stem tuple. Calculates accuracy for the whole data.
-     * @param filepath /path/to/metubank_train.conll
+     *
+     * @param filepath       /path/to/metubank_train.conll
      * @param calculateRates true means only calculate the wordlength-stemlength probabilities, false means test our Stemmer.
      * @throws IOException
      */
@@ -178,8 +198,7 @@ public class Core {
                 int score = rates.get(ratio);
                 lengthProbabilities.put(ratio, (double) score / 29081.0);
             }
-        }
-        else {
+        } else {
             System.out.println(correct + "/" + cnt + " = " + 100 * correct / cnt + "%");
         }
 
@@ -219,11 +238,11 @@ public class Core {
         alphabet.put(27, "z");
     }
 
-    /** reads and parses TDK Dictionary into the memory.
-     *
+    /**
+     * reads and parses TDK Dictionary into the memory.
+     * <p>
      * Each word in the TDK dictionary, apart from the ones that do not have a proper lexical class,
      * will be created as an instance of Word class and will be put in turkish ArrayList.
-     *
      */
     public static void readTurkish(String filepath) throws IOException {
         BufferedReader read;
@@ -405,6 +424,7 @@ public class Core {
 
     /**
      * Returns the instance of Word from the turkish list w.r.t. given String
+     *
      * @param content content of the wanted Word
      * @return an instance of Word if found, null otherwise.
      */
@@ -419,6 +439,7 @@ public class Core {
 
     /**
      * Returns all the instances of Ek w.r.t. given String, considers only the derivational suffixes.
+     *
      * @param content content of the wanted Ek
      * @return a list of Eks
      */
@@ -436,6 +457,7 @@ public class Core {
 
     /**
      * Returns all the instances of Ek w.r.t. given String, considers only the inflectional suffixes.
+     *
      * @param content content of the wanted Ek
      * @return a list of Eks
      */
@@ -575,8 +597,9 @@ public class Core {
 
     /**
      * Reads the inflectional and derivational suffixes, as well as TurkishRoots from the local drive.
-     * @param filepath1 /path/to/yapımekleri.txt
-     * @param filepath2 /path/to/cekimekleri.txt
+     *
+     * @param filepath1                          /path/to/yapımekleri.txt
+     * @param filepath2                          /path/to/cekimekleri.txt
      * @param filepath3/path/to/TurkishRoots.txt
      * @throws IOException
      */
