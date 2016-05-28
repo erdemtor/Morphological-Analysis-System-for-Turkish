@@ -7,11 +7,9 @@ import java.util.Scanner;
 
 public class Main {
     static ArrayList<HashMap<String, Integer>> turkissh = new ArrayList<>();
-    static ArrayList<String> inputWords = new ArrayList<>();
+
     public static void main(String[] args) throws FileNotFoundException {
-        readFromFile();
-        readAndFillInput();
-        System.out.println(correctMisspelling());
+
     }
 
 
@@ -73,31 +71,15 @@ public class Main {
                 turkissh.get(wordAndFreq[0].length() - 2).put(wordAndFreq[0],Integer.parseInt(wordAndFreq[1]));
         }
     }
-    public static void readAndFillInput() throws FileNotFoundException {
-        Scanner s = new Scanner(new File("input.txt"));
-
-        while (s.hasNextLine()){
-            String WORD = s.nextLine();
-            String[] words = WORD.split(" ");
-            for (String word:words) {
-                inputWords.add(word);
-            }
-        }
 
 
-
-
-
-    }
-    public static String correctMisspelling(){
+    public static String correctMisspelling(String input){
         String result ="";
-        String  finalResult="";
-        for (int i = 0; i <inputWords.size() ; i++) {
             //int min = Integer.MAX_VALUE;
             boolean cont = true;
             ArrayList<String> mins = new ArrayList<>();
-            for (String x: turkissh.get(inputWords.get(i).length()-2).keySet()) {
-                int distance = minDistance(x,inputWords.get(i).toLowerCase());
+            for (String x: turkissh.get(input.length()-2).keySet()) {
+                int distance = minDistance(x,input.toLowerCase());
                 if(distance== 1){
                     mins.add(x);
                 }
@@ -110,8 +92,8 @@ public class Main {
                 }
             }
             if(cont){
-                for (String x: turkissh.get(inputWords.get(i).length()-1).keySet()) {
-                    int distance = minDistance(x,inputWords.get(i).toLowerCase());
+                for (String x: turkissh.get(input.length()-1).keySet()) {
+                    int distance = minDistance(x,input.toLowerCase());
                     if(distance== 1){
                         mins.add(x);
                     }
@@ -123,9 +105,9 @@ public class Main {
                         }
                     }
                 }
-                if(inputWords.get(i).length() > 2 && cont) {
-                    for (String x: turkissh.get(inputWords.get(i).length()-3).keySet()) {
-                        int distance = minDistance(x,inputWords.get(i).toLowerCase());
+                if(input.length() > 2 && cont) {
+                    for (String x: turkissh.get(input.length()-3).keySet()) {
+                        int distance = minDistance(x,input.toLowerCase());
                         if(distance== 1){
                             mins.add(x);
                         }
@@ -139,7 +121,7 @@ public class Main {
                     }
                 }
                 int maxFreq = Integer.MIN_VALUE;
-                result = inputWords.get(i);
+                result = input;
                 for (String w:mins) {
                     if(turkissh.get(w.length()-2).get(w) > maxFreq){
                         result = w;
@@ -148,8 +130,8 @@ public class Main {
                 }
             }
 
-            finalResult+= result+" ";
-        }
-        return finalResult;
+        
+        
+        return result;
     }
 }
