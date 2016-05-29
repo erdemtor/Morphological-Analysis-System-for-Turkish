@@ -22,7 +22,8 @@ public class Core {
         train();
     }
 
-    public static String interactUser(String input, boolean isEditdistance, boolean stemmer) {
+    public static HashMap<String, String> interactUser(String input, boolean isEditdistance, boolean stemmer) {
+        HashMap<String, String> result = new HashMap<>();
         String outputString = "";
         String word = input;
         if (isEditdistance) {
@@ -46,22 +47,71 @@ public class Core {
                 }
             }
         }
+        String pretty = outputString;
+        String normal = outputString;
         if (!stemmer) {
-            outputString += ("\tThe system found the following possible morphological parsing: \n");
+            pretty += ("The system found the following possible morphological parsings: \n");
+            normal += ("The system found the following possible morphological parsings: \n");
             for (String root : predictedRoots) {
-                List<WordDetail> possibleMorphs = morphologycallyAnalyze(root, input.substring(root.length()));
-                for (WordDetail wd: possibleMorphs) {
-                    outputString +="\t\t" +  wd.toString() + "\n";
+                HashSet<WordDetail> possibleMorphs = morphologycallyAnalyze(root, word.substring(root.length()));
+                List<PrettyWordDetail> prettyOutput = makePretty(possibleMorphs);
+                for (PrettyWordDetail pwd: prettyOutput) {
+                    pretty +="> " +  pwd.toString() + "\n";
+                }
+                for (WordDetail pwd: possibleMorphs) {
+                    normal +="> " +  pwd.toString() + "\n";
                 }
             }
-            outputString += ("\t==================================================" + "\n");
         } else {
-            outputString += ("\tThe system found the followings as possible stems: " + predictedRoots.toString() + "\n");
-            outputString += ("\tAmong those the most possible stem is: " + predictedRoot + "\n");
-            outputString += ("\t==================================================" + "\n");
+            pretty += ("The system found the followings as possible stems: " + predictedRoots.toString() + "\n");
+            normal += ("The system found the followings as possible stems: " + predictedRoots.toString() + "\n");
+            pretty += ("Among those the most possible stem is: " + predictedRoot + "\n");
+            double total = 0;
+            for (String predicted : predictedRoots) {
+                double ratio = (double) word.length() / (double) predicted.length();
+                ratio = (double) Math.round(ratio * 10) / 10.0;
+                if (lengthProbabilities.containsKey(ratio)) {
+                    total += lengthProbabilities.get(ratio);
+                }
+            }
+            for (String predicted : predictedRoots) {
+                if (total == 0.0) {
+                    normal += "> " + predicted + " with a score of: " + 100.0 +"%\n";
+                } else {
+                    double ratio = (double) word.length() / (double) predicted.length();
+                    ratio = (double) Math.round(ratio * 10) / 10.0;
+                    if (lengthProbabilities.containsKey(ratio)) {
+                        double prob = lengthProbabilities.get(ratio);
+                        prob = (prob/total)*100.0;
+                        prob = (double) Math.round(prob * 10) / 10.0;
+                        normal += "> " + predicted + " with a score of: " + prob +"%\n";
+                    } else {
+                        normal += "> " + predicted + " with a score of: " + 0 +"%\n";
+                    }
+                }
+            }
         }
-        return outputString;
+        pretty += ("==============================================================================================" + "\n");
+        normal += ("==============================================================================================" + "\n");
+        result.put("normal", normal);
+        result.put("pretty", pretty);
 
+        return result;
+
+    }
+
+    private static List<PrettyWordDetail> makePretty(HashSet<WordDetail>  predictedRoots) {
+        List<PrettyWordDetail> result = new ArrayList<>();
+        HashSet<PrettyWordDetail> resultUnique = new HashSet<>();
+        for (WordDetail wd : predictedRoots) {
+            ArrayList<String> ekler = new ArrayList<>();
+            for (Ek ek : wd.getEkler()) {
+                ekler.add(ek.getEk() + "(" + ek.getClass().toString().substring(ek.getClass().toString().indexOf(" ") + 1) + ")");
+            }
+            resultUnique.add(new PrettyWordDetail(wd.getRoot(), ekler));
+        }
+        result.addAll(resultUnique);
+        return result;
     }
 
 
@@ -101,7 +151,7 @@ public class Core {
      * gets rid of the nonword characters at the end of a word.
      * gets rid of any nonword character in a word (excluding digits) // 19.2 or 16,3 will pass, whereas "It's okay" will be "its okay"
      */
-    private static String tokenizeString(String potentialToken) {
+    public static String tokenizeString(String potentialToken) {
         StringBuilder stringBuilder = new StringBuilder();
         if (potentialToken.length() > 0) { // parseDouble thinks "1980." a double. avoid that.
             if (!Character.isDigit(potentialToken.charAt(potentialToken.length() - 1)) && !Character.isLetter(potentialToken.charAt(potentialToken.length() - 1))) {
@@ -238,13 +288,16 @@ public class Core {
     }
 
 
-    public static List<WordDetail> morphologycallyAnalyze(String root, String ekler) {
-        List<WordDetail> results = new ArrayList<>();
+    public static HashSet<WordDetail> morphologycallyAnalyze(String root, String ekler) {
+        HashSet<WordDetail> results = new HashSet<>();
         Integer length = ekler.length();
+
+        // for the combination of Yapım + Çekim ekleri
         for (int i = 1; i < length; i++) {
             String candidateYapımEkleri = ekler.substring(0, i);
             ArrayList<String> answer = allProducable(candidateYapımEkleri, yapimEkleriStr);
             ArrayList<WordDetail> filtered = new ArrayList<>();
+
             if (answer != null) {
                 ArrayList<WordDetail> wds = markSuffixes(answer, root, true, false);
                 filtered = filter(wds, true, "");
@@ -273,6 +326,26 @@ public class Core {
                 }
             }
 
+        }
+        // for yapım ekleri
+        ArrayList<String> answer = allProducable(ekler, yapimEkleriStr);
+        ArrayList<WordDetail> filtered = new ArrayList<>();
+        if (answer != null) {
+            ArrayList<WordDetail> wds = markSuffixes(answer, root, true, false);
+            filtered = filter(wds, true, "");
+            if (filtered.size() > 0) {
+                results.addAll(filtered);
+            }
+        }
+        // for çekim ekleri
+        answer = allProducable(ekler, cekimEkleriStr);
+        filtered = new ArrayList<>();
+        if (answer != null) {
+            ArrayList<WordDetail> wds = markSuffixes(answer, root, false, true);
+            filtered = filter(wds, false, "");
+            if (filtered.size() > 0) {
+                results.addAll(filtered);
+            }
         }
         return results;
     }

@@ -267,7 +267,7 @@ public class TurkishRenderer {
      *
      */
     public static String tokenize(String line) {
-        String[] prettyTokens = line.toLowerCase().split(" "); // split the lowercase string by whitespace
+        String[] prettyTokens = line.toLowerCase().split("\\s+"); // split the lowercase string by whitespace
         StringBuilder bigBuilder = new StringBuilder();
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < prettyTokens.length; i++) {

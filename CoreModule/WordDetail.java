@@ -30,8 +30,8 @@ public class WordDetail {
 
     @Override
     public int hashCode() {
-        int hash = this.getRoot().hashCode();
-        hash += this.getEkler().hashCode();
+        int hash = 7*this.getRoot().hashCode();
+        hash += 17*this.getEkler().hashCode();
         return hash;
     }
 

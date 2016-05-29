@@ -67,7 +67,7 @@ public class Main {
         String str;
         while ((str = read.readLine()) != null) {
             String[] wordAndFreq = str.split(" ");
-            if(wordAndFreq[0].length()>2)
+            if(wordAndFreq[0].length()>=2)
                 turkissh.get(wordAndFreq[0].length() - 2).put(wordAndFreq[0],Integer.parseInt(wordAndFreq[1]));
         }
     }
