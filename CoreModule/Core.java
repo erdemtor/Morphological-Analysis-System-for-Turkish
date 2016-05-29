@@ -123,7 +123,7 @@ public class Core {
         alphabet = new HashMap<>();
         lengthProbabilities = new HashMap<>();
         createAlphabet();
-        readTurkish("Sozluk");
+        readTurkish();
         readSuffixes("yapımekleri.txt", "çekimekleri.txt", "TurkishRoots.txt");
         readMetuBankAndProcess("turkish_metu_sabanci_train.conll", true);
         Main.readFromFile();
@@ -260,13 +260,13 @@ public class Core {
         alphabet.put(0, "a");
         alphabet.put(1, "b");
         alphabet.put(2, "c");
-        alphabet.put(3, "ç");
+        alphabet.put(3, "cx");
         alphabet.put(4, "d");
         alphabet.put(5, "e");
         alphabet.put(6, "f");
         alphabet.put(7, "g");
         alphabet.put(8, "h");
-        alphabet.put(9, "ı");
+        alphabet.put(9, "ix");
         alphabet.put(10, "i");
         alphabet.put(11, "j");
         alphabet.put(12, "k");
@@ -274,14 +274,14 @@ public class Core {
         alphabet.put(14, "m");
         alphabet.put(15, "n");
         alphabet.put(16, "o");
-        alphabet.put(17, "ö");
+        alphabet.put(17, "ox");
         alphabet.put(18, "p");
         alphabet.put(19, "r");
         alphabet.put(20, "s");
-        alphabet.put(21, "ş");
+        alphabet.put(21, "sx");
         alphabet.put(22, "t");
         alphabet.put(23, "u");
-        alphabet.put(24, "ü");
+        alphabet.put(24, "ux");
         alphabet.put(25, "v");
         alphabet.put(26, "y");
         alphabet.put(27, "z");
@@ -357,15 +357,13 @@ public class Core {
      * Each word in the TDK dictionary, apart from the ones that do not have a proper lexical class,
      * will be created as an instance of Word class and will be put in turkish ArrayList.
      */
-    public static void readTurkish(String filepath) throws IOException {
+    public static void readTurkish() throws IOException {
         BufferedReader read;
         String str;
         for (int i = 0; i < 28; i++) { //for each of the files
-            String currentFileName = filepath + "\\" + alphabet.get(i) + "\\";
-            currentFileName = "HARF_" + alphabet.get(i) + ".xml";
-
+            String currentFileName =  "HARF_" + alphabet.get(i) + ".xml";
             InputStream bytes = Core.class.getClassLoader().getResourceAsStream(currentFileName);
-            Reader chars = new InputStreamReader(bytes);
+            Reader chars = new InputStreamReader(bytes, "UTF8");
             read = new BufferedReader(chars);
             while ((str = read.readLine()) != null) {
 
@@ -720,7 +718,7 @@ public class Core {
      */
     private static void readSuffixes(String filepath1, String filepath2, String filepath3) throws IOException {
         InputStream is = Core.class.getClassLoader().getResourceAsStream(filepath1);
-        InputStreamReader read2 = new InputStreamReader(is);
+        InputStreamReader read2 = new InputStreamReader(is, "UTF8");
         BufferedReader read = new BufferedReader(read2);
         String str;
         while ((str = read.readLine()) != null) {
@@ -738,7 +736,7 @@ public class Core {
         }
         read.close();
         is = Core.class.getClassLoader().getResourceAsStream(filepath2);
-        read2 = new InputStreamReader(is);
+        read2 = new InputStreamReader(is, "UTF8");
         read = new BufferedReader(read2);
         while ((str = read.readLine()) != null) {
             String[] temp2 = str.split(" \\* ");
@@ -752,7 +750,7 @@ public class Core {
         }
         read.close();
         is = Core.class.getClassLoader().getResourceAsStream(filepath3);
-        read2 = new InputStreamReader(is);
+        read2 = new InputStreamReader(is, "UTF8");
         read = new BufferedReader(read2);
         while ((str = read.readLine()) != null) {
             String[] temp2 = str.split(" ");
