@@ -58,7 +58,7 @@ public class Main {
      */
     public static void readFromFile() throws IOException {
         InputStream is = Core.class.getClassLoader().getResourceAsStream("turkish words database.txt");
-        InputStreamReader read2 = new InputStreamReader(is);
+        InputStreamReader read2 = new InputStreamReader(is, "UTF-8");
         BufferedReader read = new BufferedReader(read2);
 
         for (int i = 0; i < 40 ; i++) {

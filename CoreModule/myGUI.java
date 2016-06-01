@@ -90,7 +90,6 @@ public class myGUI extends JFrame {
         window.setVisible(false);
         window.dispose();
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(dim.width/2-1200/2, dim.height/2-560/2, 1200, 560);
         setResizable(true);
@@ -103,7 +102,7 @@ public class myGUI extends JFrame {
             prettyOutput.setText("");
             String runtype = (String) runType.getSelectedItem();
             if (userInput.getText().contains(" ")) {
-                String[] tokenized = TurkishRenderer.tokenize(userInput.getText()).split(" ");
+                String[] tokenized = TurkishRenderer.tokenize(userInput.getText().toLowerCase()).split(" ");
                 result.put("normal", "");
                 result.put("pretty", "");
                 for (String token : tokenized) {
@@ -113,7 +112,7 @@ public class myGUI extends JFrame {
                     result.put("pretty", result.get("pretty") + "\n" + res.get("pretty"));
                 }
             } else {
-                result = Core.interactUser(userInput.getText(), isEditDistance.isSelected(), runtype.equals("Stemmer"));
+                result = Core.interactUser(userInput.getText().toLowerCase(), isEditDistance.isSelected(), runtype.equals("Stemmer"));
             }
             prettyOutput.setText(result.get("pretty"));
             detailedOutput.setText(result.get("normal"));

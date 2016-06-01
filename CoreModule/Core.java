@@ -20,8 +20,24 @@ public class Core {
 
     public static void main(String[] args) throws IOException {
         train();
+        Scanner scanner = new Scanner(System.in, "UTF-8");
+        String input = "";
+        while (!input.equals("q")) {
+            System.out.println("Enter your input: (q for exit)");
+            input = scanner.next().toLowerCase();
+            if (input.equals("q")) {
+                System.out.println("Goodbye!");
+                System.exit(0);
+            }
+            System.out.println("Spell correction? (y/n)");
+            String spellCorr = scanner.next().toLowerCase();
+            System.out.println("1. Stemmer\n2. Morphological Analyzer");
+            String stemmer = scanner.next().toLowerCase();
+            HashMap<String, String> results = interactUser(input, spellCorr.equals("y"), stemmer.equals("1"));
+            System.out.println(results.get("normal"));
+            System.out.println("\n\n");
+        }
     }
-
     public static HashMap<String, String> interactUser(String input, boolean isEditdistance, boolean stemmer) {
         HashMap<String, String> result = new HashMap<>();
         String outputString = "";
@@ -126,7 +142,9 @@ public class Core {
         readTurkish();
         readSuffixes("yapımekleri.txt", "çekimekleri.txt", "TurkishRoots.txt");
         readMetuBankAndProcess("turkish_metu_sabanci_train.conll", true);
+   //     readMetuBankAndProcess("turkish_metu_sabanci_train.conll", false);
         Main.readFromFile();
+        System.out.println();
     }
 
     /**
@@ -207,12 +225,17 @@ public class Core {
 
                     if (!calculateRates) {
                         cnt++;
-                        System.out.print("Results for " + tokens[1].toLowerCase() + " (" + tokens[2] + ") : ");
-                        ArrayList<String> predictedRoots = testWords(tokenizeString(tokens[1].toLowerCase()), true);
+
+                      //  System.out.print("Results for " + tokens[1].toLowerCase() + " (" + tokens[2] + ") : ");
+                        ArrayList<String> predictedRoots = testWords(tokenizeString(tokens[1].toLowerCase()), false);
                         if (predictedRoots.size() > 0) {
                             double maxProb = -1;
                             String predictedRoot = predictedRoots.get(0);
                             for (String res : predictedRoots) {
+                                HashSet<WordDetail> hahaha = morphologycallyAnalyze(res, word.substring(res.length()));
+                                if (hahaha.size() == 1) {
+                                    System.out.println(tokens[1].toLowerCase() +": " +hahaha.toString());
+                                }
                                 double ratio = (double) word.length() / (double) res.length();
                                 ratio = (double) Math.round(ratio * 10) / 10.0;
                                 if (lengthProbabilities.containsKey(ratio)) {
@@ -227,7 +250,9 @@ public class Core {
                                 correct++;
                             }
                         }
-                        System.out.println(predictedRoots.toString() + " " + correct + "/" + cnt);
+                        if (predictedRoots.size() > 2) {
+                         //   System.out.println(tokens[1].toLowerCase() +": " + predictedRoots.toString() + " " + correct + "/" + cnt);
+                        }
                     } else {
                         double ratio = (double) word.length() / (double) root.length();
                         ratio = (double) Math.round(ratio * 10) / 10.0;
